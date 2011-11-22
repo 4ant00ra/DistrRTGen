@@ -59,7 +59,6 @@ public:
 	int bLoggedIn;
 public:
 	int RegisterNewClient(int &nClientID);
-	int Connect();
 	void Disconnect();
 	int Login(std::string Username, std::string Password, std::string sHostname, int nUserID, double nFrequency);
 	int SendFinishedWork(int PartID, std::string Filename, std::string sUsername, std::string sPassword);

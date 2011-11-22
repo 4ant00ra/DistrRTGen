@@ -34,7 +34,7 @@ struct MemoryStruct {
 };
 
 // There might be a realloc() out there that doesn't like reallocing
-// NULL pointers, so we take care of it here */
+// NULL pointers, so we take care of it here 
 static void *myrealloc(void *ptr, size_t size)
 {
     if(ptr)
@@ -73,13 +73,6 @@ ServerConnector::~ServerConnector(void)
 		Disconnect();
 		delete s; 
 	}
-}
-
-int ServerConnector::Connect()
-{		
-	// deprecated since we use HTTP protocol
-	// TODO : Add a simple http connect to verify server is up...
-	return true;
 }
 
 void ServerConnector::Disconnect()
@@ -216,21 +209,17 @@ int ServerConnector::SendFinishedWork(int nPartID, std::string Filename, std::st
 			
 			if(nTalkative <= TK_ALL)
 				curl_easy_setopt(curl, CURLOPT_NOPROGRESS, false);
-			//curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress);
-			//curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, &Bar);
 			
 			
 			res = curl_easy_perform(curl); /* post away! */
 			if (res == 0)
 			{
-				//std::cout << "Uploading of Part ID n° " << nPartID << " succeded" << std::endl;
 				// Retrieve Server XML answer
 				TiXmlDocument xUploadAnswer;
 				if(xUploadAnswer.Parse(xmlresponse.memory))
 				{
 					TiXmlElement * pElem;
 					pElem = xUploadAnswer.FirstChildElement();
-					//printf("%s\n",xmlresponse); //Debug purpose
 					if(pElem->FirstChildElement("ok"))
 					{
 						curl_formfree(post);
@@ -247,7 +236,6 @@ int ServerConnector::SendFinishedWork(int nPartID, std::string Filename, std::st
           					free(xmlresponse.memory);
 						std::cout << pElem->FirstChildElement("error")->GetText() << std::endl;
 						return TRANSFER_NOTREGISTERED;
-						//throw new ConnectionException(EL_ERROR, pElem->FirstChildElement("error")->GetText());
 					}
 					else
 					{
