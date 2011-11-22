@@ -20,7 +20,7 @@
 #define CPU_INFO_FILENAME "/proc/cpuinfo"
 #define MAX_PART_SIZE 8000000 //size of PART file
 #define CLIENT_WAIT_TIME_SECONDS 600 // Wait 10 min and try again
-#define VERSION "4.0 LX"
+#define VERSION "1.0 LX"
 
 enum TALKATIVE
 {
