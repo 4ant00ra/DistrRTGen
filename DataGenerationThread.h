@@ -5,13 +5,6 @@
 #include "Public.h"
 #include "Thread.h"
 
-typedef struct 
-{
-	int nRainbowChainLen;
-	int nChainCount;
-	uint64 nChainStart;
-} DataGenerationThreadParameters;
-
 class CDataGenerationThread :
 	public CThread
 {

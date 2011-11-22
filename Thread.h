@@ -2,17 +2,19 @@
 #define THREAD_H
 
 #include <pthread.h>
+#include "Public.h"
 
 class CThread
 {
 protected:
 	int bTerminateThreadFlag;
-	void *Params;
+        DataGenerationThreadParameters *Params;;
+
 	pthread_t threadHandle;
 public:
 	int IsTerminated() { return bTerminateThreadFlag; }
 	CThread(void);
-	void Start(void *Parameters);
+	void Start(DataGenerationThreadParameters *Parameters);
 	void Stop();
 	virtual void threadProc() = 0;
 public:

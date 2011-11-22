@@ -29,7 +29,7 @@ void StartThreadFunction(CThread* pThread)
 {
 	pThread->threadProc();	
 }
-void CThread::Start(void *Parameters)
+void CThread::Start(DataGenerationThreadParameters *Parameters)
 {
 	if(this->Params != NULL)
 		delete this->Params;

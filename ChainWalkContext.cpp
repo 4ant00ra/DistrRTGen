@@ -53,7 +53,7 @@ bool CChainWalkContext::LoadCharset(string sName)
 	vector<string> vLine;
 	if (ReadLinesFromFile("charset.txt", vLine))
 	{
-		int i;
+		unsigned int i;
 		for (i = 0; i < vLine.size(); i++)
 		{
 			// Filter comment
@@ -70,7 +70,7 @@ bool CChainWalkContext::LoadCharset(string sName)
 
 				// sCharsetName charset check
 				bool fCharsetNameCheckPass = true;
-				int j;
+				unsigned int j;
 				for (j = 0; j < sCharsetName.size(); j++)
 				{
 					if (   !isalpha(sCharsetName[j])
@@ -232,7 +232,7 @@ bool CChainWalkContext::SetupWithPathName(string sPathName, int& nRainbowChainLe
 	string sCharsetDefinition = vPart[1];
 	string sCharsetName;
 	int nPlainLenMin, nPlainLenMax;
-	if (sCharsetDefinition.find('#') == -1)		// For backward compatibility, "#1-7" is implied
+	if (sCharsetDefinition.find('#') == (unsigned)-1)		// For backward compatibility, "#1-7" is implied
 	{
 		sCharsetName = sCharsetDefinition;
 		nPlainLenMin = 1;

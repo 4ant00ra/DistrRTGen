@@ -40,4 +40,12 @@ void ParseHash(string sHash, unsigned char* pHash, int& nHashLen);
 
 void Logo();
 
+typedef struct
+{
+        int nRainbowChainLen;
+        int nChainCount;
+        uint64 nChainStart;
+} DataGenerationThreadParameters;
+
+
 #endif

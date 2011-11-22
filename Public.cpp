@@ -53,7 +53,7 @@ bool ReadLinesFromFile(string sPathName, vector<string>& vLine)
 		content += "\n";
 		delete data;
 
-		int i;
+		unsigned int i;
 		for (i = 0; i < content.size(); i++)
 		{
 			if (content[i] == '\r')
@@ -82,7 +82,7 @@ bool SeperateString(string s, string sSeperator, vector<string>& vPart)
 {
 	vPart.clear();
 
-	int i;
+	unsigned int i;
 	for (i = 0; i < sSeperator.size(); i++)
 	{
 		int n = s.find(sSeperator[i]);
@@ -133,7 +133,7 @@ string HexToStr(const unsigned char* pData, int nLen)
 
 void ParseHash(string sHash, unsigned char* pHash, int& nHashLen)
 {
-	int i;
+	unsigned int i;
 	for (i = 0; i < sHash.size() / 2; i++)
 	{
 		string sSub = sHash.substr(i * 2, 2);

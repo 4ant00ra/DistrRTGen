@@ -11,7 +11,7 @@
 
 int QuickSortPartition(RainbowChain* pChain, int nLow, int nHigh)
 {
-	int nRandomIndex = nLow + ((unsigned int)rand() * (RAND_MAX + 1) + (unsigned int)rand()) % (nHigh - nLow + 1);
+	int nRandomIndex = nLow + ((unsigned int)rand() * (RAND_MAX) + 1 + (unsigned int)rand()) % (nHigh - nLow + 1);
 	RainbowChain TempChain;
 	TempChain = pChain[nLow];
 	pChain[nLow] = pChain[nRandomIndex];
@@ -102,7 +102,7 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 	if(sHashRoutineName == "mscache")
 	{
 		unsigned char UnicodePlain[MAX_PLAIN_LEN * 2];
-		int i;
+		unsigned int i;
 		for (i = 0; i < sSalt.length(); i++)
 		{
 			UnicodePlain[i * 2] = ((unsigned char *)sSalt.c_str())[i];
@@ -218,7 +218,7 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 				options->nRainbowChainLen = nRainbowChainLen;
 				options->nChainCount = 50000; // Split it into 50000 chain chunks
 				options->nChainStart = nChainStart;
-				m_pThreads[i]->Start(&options);			
+				m_pThreads[i]->Start(options);			
 				nChainStart += 50000;
 			}
 		}
