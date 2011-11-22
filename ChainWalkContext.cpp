@@ -3,18 +3,10 @@
 
    Copyright (C) Zhu Shuanglei <shuanglei@hotmail.com>
 */
-
-#ifdef _WIN32
-	#pragma warning(disable : 4786)
-#endif
-
-#include "ChainWalkContext.h"
-
 #include <ctype.h>
 #include <openssl/rand.h>
-#ifdef _WIN32
-	#pragma comment(lib, "libeay32.lib")
-#endif
+
+#include "ChainWalkContext.h"
 
 //////////////////////////////////////////////////////////////////////
 

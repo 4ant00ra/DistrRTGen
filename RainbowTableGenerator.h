@@ -1,9 +1,11 @@
 #ifndef __RAINBOWTABLEGENERATOR_H_
 #define __RAINBOWTABLEGENERATOR_H_
 
-#include <string>
 #include <fstream>
+#include <string>
+
 #include "DataGenerationThread.h"
+
 void QuickSort(RainbowChain* pChain, int nLow, int nHigh);
 class CRainbowTableGenerator
 {
@@ -13,7 +15,6 @@ public:
 	~CRainbowTableGenerator(void);
 	int CalculateTable(std::string sFilename, int nRainbowChainCount, std::string sHashRoutineName, std::string sCharsetName, int nPlainLenMin, int nPlainLenMax, int nRainbowTableIndex, int nRainbowChainLen, uint64 nChainStart, std::string sSalt = "");
 
-//	int GetCalculationSpeed() { return m_nCalculationSpeed; }
 	int GetCurrentCalculatedChains() 
 	{
 		if(m_nCurrentCalculatedChains == -1) return 0;
@@ -33,7 +34,6 @@ private:
 	int m_nCurrentCalculatedChains;
 	int m_nProcessorCount;
 	CDataGenerationThread **m_pThreads;
-//	int GetFileLen(std::ofstream File);
 };
 
 #endif

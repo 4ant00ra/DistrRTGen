@@ -1,15 +1,16 @@
-#include "ServerConnector.h"
-#include <sstream>
-#include <sys/stat.h>
+#include <curl/curl.h>
+#include <curl/easy.h>
+#include <curl/types.h>
 #include <fstream>
 #include <iostream>
+#include <sstream>
+#include <sys/stat.h>
 #include <vector>
-#include <curl/curl.h>
-#include <curl/types.h>
-#include <curl/easy.h>
+
 #include "config.h"
-#include "tinyxml.h"
 #include "DistrRTGenBinding.nsmap"
+#include "ServerConnector.h"
+#include "tinyxml.h"
 
 #define SERVER_PORT 80
 #define SERVER_NAME "http://distributed.freerainbowtables.com/server.php"
@@ -77,10 +78,6 @@ ServerConnector::~ServerConnector(void)
 
 void ServerConnector::Disconnect()
 {
-	//commented by alesc <alexis.dagues@gmail.com> no need with HTTP
-	//std::ostringstream sDisc; // Send a disconnection packet
-	//sDisc << (unsigned char)0xfc << (unsigned char)0x07 << (unsigned char)0x00 << (unsigned char)0x00;
-	//*s << sDisc.str();
 	delete s;
 	s = NULL;
 }

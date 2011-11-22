@@ -1,6 +1,7 @@
-#include "Thread.h"
 #include <iostream>
+
 #include "config.h"
+#include "Thread.h"
 CThread::CThread(void)
 {
 	bTerminateThreadFlag = false;

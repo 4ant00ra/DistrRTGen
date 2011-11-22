@@ -1,8 +1,10 @@
 #ifndef _SOCKET_EXCEPTION_H__
 #define _SOCKET_EXCEPTION_H__
 
-#include "Exception.h"
 #include <string>
+
+#include "Exception.h"
+
 class SocketException :
 	public Exception
 {

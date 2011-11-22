@@ -1,14 +1,13 @@
-
-#include "RainbowTableGenerator.h"
-#include "ChainWalkContext.h"
 #include <iostream>
 #include <sstream>
+#include <sys/resource.h>
 #include <time.h>
-#ifndef WIN32
-	#include <sys/resource.h>
-#endif
+
+#include "ChainWalkContext.h"
 #include "Exception.h"
+#include "RainbowTableGenerator.h"
 #include "zlib.h"
+
 
 int QuickSortPartition(RainbowChain* pChain, int nLow, int nHigh)
 {

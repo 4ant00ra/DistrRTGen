@@ -1,8 +1,10 @@
 #ifndef _CLIENTSOCKET_H__
 #define _CLIENTSOCKET_H__
 
-#include "BaseSocket.h"
 #include <sstream>
+
+#include "BaseSocket.h"
+
 class CClientSocket :
 	public CBaseSocket
 {

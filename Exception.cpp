@@ -1,4 +1,3 @@
-
 #include "Exception.h"
 
 Exception::Exception(std::string szErrorMessage)

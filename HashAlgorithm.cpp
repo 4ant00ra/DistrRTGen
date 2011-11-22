@@ -4,21 +4,18 @@
    Copyright (C) Zhu Shuanglei <shuanglei@hotmail.com>
 */
 
-#include "HashAlgorithm.h"
-
-#include "Public.h"
-
-#include "MD5new.h" //added by alesc <alexis.dagues@gmail.com>
-
 #include <openssl/des.h>
 #include <openssl/md2.h>
 #include <openssl/md4.h>
 #include <openssl/md5.h>
-#include <openssl/sha.h>
 #include <openssl/ripemd.h>
-#ifdef _WIN32
-	#pragma comment(lib, "libeay32.lib")
-#endif
+#include <openssl/sha.h>
+
+#include "HashAlgorithm.h"
+#include "MD5new.h" //added by alesc <alexis.dagues@gmail.com>
+#include "Public.h"
+
+
 #define MSCACHE_HASH_SIZE 16
 
 void setup_des_key(unsigned char key_56[], des_key_schedule &ks)
@@ -40,10 +37,6 @@ void setup_des_key(unsigned char key_56[], des_key_schedule &ks)
 
 void HashLM(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const unsigned char *pUsername, int nSaltLength)
 {
-	/*
-	unsigned char data[7] = {0};
-	memcpy(data, pPlain, nPlainLen > 7 ? 7 : nPlainLen);
-	*/
 
 	int i;
 	for (i = nPlainLen; i < 7; i++)
@@ -51,7 +44,6 @@ void HashLM(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const un
 
 	static unsigned char magic[] = {0x4B, 0x47, 0x53, 0x21, 0x40, 0x23, 0x24, 0x25};
 	des_key_schedule ks;
-	//setup_des_key(data, ks);
 	setup_des_key(pPlain, ks);
 	des_ecb_encrypt((des_cblock*)magic, (des_cblock*)pHash, ks, DES_ENCRYPT);
 }
@@ -193,7 +185,6 @@ void HashMSCACHE(unsigned char *pPlain, int nPlainLen, unsigned char* pHash, con
 {
 	unsigned char *buf = (unsigned char*)calloc(MSCACHE_HASH_SIZE + nSaltLength, sizeof(unsigned char));
 	HashNTLM(pPlain, nPlainLen, buf, NULL);
-	//MD4(pPlain, nPlainLen, buf);
 	memcpy(buf + MSCACHE_HASH_SIZE, pSalt, nSaltLength);
 	//mod:alesc
 	#ifndef _FAST_HASH_

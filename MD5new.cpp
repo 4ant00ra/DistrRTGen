@@ -29,14 +29,12 @@
 #include "MD5new.h"
 
 /* The four core functions - F1 is optimized somewhat */
-/* #define F1(x, y, z) (x & y | ~x & z) */
 #define F1(x, y, z) (z ^ (x & (y ^ z)))
 #define F2(x, y, z) F1(z, x, y)
 #define F3(x, y, z) (x ^ y ^ z)
 #define F4(x, y, z) (y ^ (x | ~z))
 
 //Here's two different ways to do a left bitwise rotation. I've seen no major speed differences between them.
-//#define ROL(x, n) ( _lrotl(x, n) ) //This also requires #include <windows.h>
 #define ROL(x,n) ( x << n | x >>(32-n) )
 
 /* This is the central step in the MD5 algorithm. */
@@ -330,7 +328,6 @@ void MD5_NEW( unsigned char * pData, int len, unsigned char * pDigest)
 			unsigned char in[4];
 			
 			memcpy(in, pData, 4);
-			//in[4] = 0x80; //(uint32 *)in[1] = 128;
 
 			//START OF MD5TRANSFORM CODE
 			//====================================================
@@ -422,7 +419,7 @@ void MD5_NEW( unsigned char * pData, int len, unsigned char * pDigest)
 			
 			memcpy(in, pData, 5);
 			in[5] = 0x80;
-			memset(in + 6, 0, 2); //(uint32 *)in[1] = 128;
+			memset(in + 6, 0, 2);
 
 			//START OF MD5TRANSFORM CODE
 			//====================================================
@@ -514,7 +511,7 @@ void MD5_NEW( unsigned char * pData, int len, unsigned char * pDigest)
 			
 			memcpy(in, pData, 6);
 			in[6] = 0x80;
-			memset(in + 7, 0, 1); //(uint32 *)in[1] = 128;
+			memset(in + 7, 0, 1);
 
 			//START OF MD5TRANSFORM CODE
 			//====================================================
@@ -1186,7 +1183,7 @@ void MD5_NEW( unsigned char * pData, int len, unsigned char * pDigest)
 			{
 				// Pad block to 56 bytes
 				memset(p, 0, count - 8);
-			}//*/
+			}
 		    
 
 			/* Append length in bits and transform */

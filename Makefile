@@ -71,7 +71,6 @@ endif
 # Include paths
 #****************************************************************************
 
-#INCS := -I/usr/include/g++-2 -I/usr/local/include
 INCS :=
 
 
@@ -127,28 +126,9 @@ install: dist configure
 		mkdir -p $(PREFIX)
 		cp distrrtgen $(PREFIX)
 
-configure:
-		@if [ `uname` = "FreeBSD" -a ! -e $(CONFFILE) ]; then   \
-				mkdir -p $(CONFDIR) ;                           \
-				sed "s|NUMCPU=.*$$|NUMCPU=`sysctl -n hw.ncpu`|" $(TMPLCONF) > $(CONFFILE); \
-				chmod 600 $(CONFFILE);                          \
-		fi
-		@if [ `uname` = "Linux" -a ! -e $(CONFFILE) ]; then  \
-				mkdir -p $(CONFDIR) ;   \
-				sed "s|NUMCPU=.*$$|NUMCPU=`grep -c ^processor /proc/cpuinfo`|" $(TMPLCONF) > $(CONFFILE); \
-				chmod 600 $(CONFFILE);	\
-		fi
-		@if [ ! -e $(CONFFILE) ]; then       \
-			mkdir -p $(CONFDIR) ;        \
-			cp $(TMPLCONF) $(CONFFILE) ; \
-			chmod 600 $(CONFFILE);       \
-		fi
-
 clean:
 	-rm -f core ${OBJS} ${OUTPUT}
 
-depend:
-	#makedepend ${INCS} ${SRCS}
 
 tinyxml.o: tinyxml.h tinystr.h
 tinyxmlparser.o: tinyxml.h tinystr.h

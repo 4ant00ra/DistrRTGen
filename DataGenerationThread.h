@@ -1,8 +1,9 @@
 #ifndef DATAGENERATIONTHREAD_H
 #define DATAGENERATIONTHREAD_H
-#include "Thread.h"
+
 #include "config.h"
 #include "Public.h"
+#include "Thread.h"
 
 typedef struct 
 {
@@ -21,7 +22,6 @@ public:
 	int GetIsDataReadyFlag() { return bDataReady; }
 	void ClearDataReadyFlag() { bDataReady = 0; }
 	unsigned const char *GetData() { return zDataChunk; }
-//	int GetChainSpeed() { return m_nChainSpeed; }
 	int GetChainsCalculated() 
 	{ 
 		int tmp = m_nChainsCalculated;
@@ -33,7 +33,6 @@ private:
 	unsigned char zDataChunk[DATA_CHUNK_SIZE]; // Used to store data a generated data chunk. Can contain 20000 chains (32kb)
 	int bDataReady; // Used to signal if buffer is filled with data. 0 = empty. 1 = buffer is full
 	int bShutdown; // Used to tell the thread to exit.
-//	int m_nChainSpeed;
 	int m_nChainsCalculated;
 };
 #endif

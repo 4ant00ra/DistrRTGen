@@ -1,4 +1,3 @@
-
 #include "SocketException.h"
 
 SocketException::SocketException(int nErrorCode, std::string szErrorMessage) : Exception(szErrorMessage)

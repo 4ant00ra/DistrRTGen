@@ -5,11 +5,11 @@
  *  Copyright  2007  alesc
  * <alexis.dagues@gmail.com>
  ****************************************************************************/
-
 #include <string>
 #include <list>
 #include <sstream>
 #include <iostream>
+
 #include "WU_mgr.h"
 #include "WU.h"
 
@@ -50,7 +50,6 @@ int wu_mgr::read(const string& filename){
 		elem->QueryIntAttribute("maxletters", &unit.maxletters);
 		elem->QueryIntAttribute("index", &unit.index);
 		elem->QueryIntAttribute("chainlength", &unit.chainlength);
-		//elem->QueryIntAttribute("maxletters", &unit.maxletters);
         unit.salt = elem->Attribute("salt");
 		unit.expiration = elem->Attribute("expiration");
 		wu_list.push_back(unit);

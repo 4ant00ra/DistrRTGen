@@ -3,13 +3,8 @@
 
    Copyright (C) Zhu Shuanglei <shuanglei@hotmail.com>
 */
-
-#ifdef _WIN32
-	#pragma warning(disable : 4786)
-#endif
-
-#include "HashRoutine.h"
 #include "HashAlgorithm.h"
+#include "HashRoutine.h"
 
 //////////////////////////////////////////////////////////////////////
 
@@ -28,7 +23,6 @@ CHashRoutine::CHashRoutine()
 	AddHashRoutine("mysqlsha1", HashMySQLSHA1, 20);
 	AddHashRoutine("ciscopix", HashPIX, 16);
 	AddHashRoutine("mscache", HashMSCACHE, 16);
-//	AddHashRoutine("lmchall", HashLMCHALL, 16);
 	AddHashRoutine("halflmchall", HashHALFLMCHALL, 8);
 }
 

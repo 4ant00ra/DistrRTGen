@@ -1,23 +1,28 @@
 #ifndef _BASESOCKET_H__
 #define _BASESOCKET_H__
 
+#include <arpa/inet.h>      /* inet_ntoa() to format IP address */
+#include <errno.h>
+#include <netdb.h>
+#include <netinet/in.h>     /* in_addr structure */
+#include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <sys/ioctl.h>
 #include <sys/un.h>
-#include <arpa/inet.h>      /* inet_ntoa() to format IP address */
-#include <netinet/in.h>     /* in_addr structure */
-#include <netdb.h>
-#include <errno.h>
+#include <vector>
+
+#include "SocketException.h"
+
 #ifndef INVALID_SOCKET
 	#define INVALID_SOCKET -1
 #endif
+
 #ifndef SOCKET_ERROR	
 	#define SOCKET_ERROR -1
 #endif
+
 #define SOCKET int
-#include "SocketException.h"
-#include <vector>
+
 class CBaseSocket
 {
 public:

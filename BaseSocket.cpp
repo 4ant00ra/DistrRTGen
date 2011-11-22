@@ -1,5 +1,5 @@
-#include "BaseSocket.h"
 #include <sstream>
+#include "BaseSocket.h"
 
 int CBaseSocket::nAmountSockets = 0;
 CBaseSocket::CBaseSocket(int nSocketType, int nProtocol)

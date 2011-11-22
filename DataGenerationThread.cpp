@@ -1,8 +1,8 @@
-
-#include "DataGenerationThread.h"
-#include "ChainWalkContext.h"
-#include <time.h>
 #include <iostream>
+#include <time.h>
+
+#include "ChainWalkContext.h"
+#include "DataGenerationThread.h"
 
 CDataGenerationThread::CDataGenerationThread(void)
 {
@@ -18,12 +18,8 @@ CDataGenerationThread::~CDataGenerationThread(void)
 
 void CDataGenerationThread::threadProc()
 {
-#ifdef _WIN32
-	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_IDLE);
-#else
 	//child thread nice value
 	nice(16);
-#endif
 
 	const DataGenerationThreadParameters *Parameters = (const DataGenerationThreadParameters *)Params;
 	CChainWalkContext cwc;
@@ -39,10 +35,6 @@ void CDataGenerationThread::threadProc()
 	{
 		*ptrCurrent = nSeed;
 		cwc.SetIndex(nSeed++);
-//		cwc.GenerateRandomIndex();
-		//uint64 nIndex = cwc.GetIndex();
-		// Copy the content over
-//		memcpy(ptrCurrent, &nIndex, 8);
 		// Increase the pointer location
 		ptrCurrent++;
 		int nPos;
@@ -54,8 +46,6 @@ void CDataGenerationThread::threadProc()
 		}
 
 		*ptrCurrent = cwc.GetIndex();
-		// Copy the content over
-		//memcpy(ptrCurrent, &nIndex, 8);
 		// Increase the pointer location
 		ptrCurrent++;
 		// We counted another chain

@@ -7,29 +7,24 @@
 #ifndef _PUBLIC_H
 #define _PUBLIC_H
 
+#include <list>
 #include <stdio.h>
-
 #include <string>
 #include <vector>
-#include <list>
 using namespace std;
 
-#ifdef _WIN32
-	#define uint64 unsigned __int64
-#else
-	#define uint64 u_int64_t
-#endif
+#define MAX_HASH_LEN  256
+#define MAX_PLAIN_LEN 256
+#define MAX_SALT_LEN  256
+#define MIN_HASH_LEN  8
+#define uint64 u_int64_t
+
 
 struct RainbowChain
 {
 	uint64 nIndexS;
 	uint64 nIndexE;
 };
-
-#define MAX_PLAIN_LEN 256
-#define MIN_HASH_LEN  8
-#define MAX_HASH_LEN  256
-#define MAX_SALT_LEN  256
 
 unsigned int GetFileLen(FILE* file);
 string TrimString(string s);

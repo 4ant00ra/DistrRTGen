@@ -9,9 +9,8 @@
 
 #ifndef _MD5NEW_H
 #define _MD5NEW_H
-#ifndef __WIN32__
-	#define uint32 unsigned long int
-#endif
+
+#define uint32 unsigned long int
 
 void MD5_NEW( unsigned char * pData, int len, unsigned char * pDigest);
 

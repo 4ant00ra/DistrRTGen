@@ -3,16 +3,7 @@
 
    Copyright (C) Zhu Shuanglei <shuanglei@hotmail.com>
 */
-
-#ifdef _WIN32
-	#pragma warning(disable : 4786)
-#endif
-
 #include "Public.h"
-
-#ifdef _WIN32
-	#include <windows.h>
-#endif
 
 //////////////////////////////////////////////////////////////////////
 
@@ -112,11 +103,7 @@ string uint64tostr(uint64 n)
 {
 	char str[32];
 
-#ifdef _WIN32
-	sprintf(str, "%I64u", n);
-#else
 	sprintf(str, "%llu", n);
-#endif
 
 	return str;
 }
@@ -125,12 +112,8 @@ string uint64tohexstr(uint64 n)
 {
 	char str[32];
 
-#ifdef _WIN32
-	sprintf(str, "%016I64x", n);
-#else
 	sprintf(str, "%016llx", n);
-#endif
-
+	
 	return str;
 }
 

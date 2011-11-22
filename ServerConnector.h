@@ -1,6 +1,8 @@
 #ifndef __SERVERCONNECTOR_H__
 #define __SERVERCONNECTOR_H__
+
 #include <string>
+
 #include "ClientSocket.h"
 #include "soapH.h"
 #include "Public.h"
