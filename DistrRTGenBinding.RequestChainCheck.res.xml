@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope
+ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+ xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:ns1="urn:DistrRTGen">
+ <SOAP-ENV:Body>
+  <ns1:RequestChainCheckResponse>
+   <ChainCheckHashList>
+    <ChainCheckHashElement>
+     <RequestID>0</RequestID>
+     <Hash></Hash>
+     <HashRoutine></HashRoutine>
+     <Charset></Charset>
+     <ChainLength>0</ChainLength>
+     <MinLetters>0</MinLetters>
+     <MaxLetters>0</MaxLetters>
+     <Index>0</Index>
+     <Salt></Salt>
+     <ExpireTime></ExpireTime>
+     <Chains></Chains>
+    </ChainCheckHashElement>
+   </ChainCheckHashList>
+   <ErrorCode>0</ErrorCode>
+  </ns1:RequestChainCheckResponse>
+ </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
