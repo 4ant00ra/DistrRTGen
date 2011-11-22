@@ -1,9 +1,5 @@
 // rtgen_client.cpp : Defines the entry point for the console application.
 //
-
-#ifdef _WIN32
-	#pragma warning(disable : 4786)
-#endif
 #include "config.h"
 #include <iostream>
 #include <fstream>
@@ -14,14 +10,13 @@
 #include "ServerConnector.h"
 #include "RainbowTableGenerator.h"
 #include "WU_mgr.h"
-#ifndef WIN32
 #include <pwd.h>
 #include <sys/types.h>
 #include <errno.h>
 #include <sys/stat.h> // For mkdir()
 #include <sys/resource.h> //renice main thread
+
 #define CPU_INFO_FILENAME "/proc/cpuinfo"
-#endif
 #define MAX_PART_SIZE 8000000 //size of PART file
 #define CLIENT_WAIT_TIME_SECONDS 600 // Wait 10 min and try again
 #define VERSION "4.0 LX"
@@ -69,12 +64,10 @@ int main(int argc, char* argv[])
 	#endif
 	// First load the client identification information
 	std::ostringstream sClientInfo;
-#ifndef WIN32
 	struct passwd *userinfo;
 	userinfo = getpwuid(getuid());
 	sHomedir = userinfo->pw_dir;
 	sClientInfo << sHomedir  << "/.distrrtgen/";
-#endif
 	
 	sClientInfo << ".client";
 	std::fstream fClientInfo(sClientInfo.str().c_str(), std::fstream::in);
@@ -87,9 +80,7 @@ int main(int argc, char* argv[])
 	}
 	// Then load the client configuration
 	std::ostringstream sConf;
-#ifndef WIN32
 	sConf << sHomedir << "/.distrrtgen/";
-#endif
 	sConf << "distrrtgen.conf";
 	std::fstream fConfig(sConf.str().c_str(), std::ifstream::in);
 	if(fConfig.is_open() == false)
@@ -136,9 +127,6 @@ int main(int argc, char* argv[])
 	// If numprocessors is 0, RainbowTableGenerator.cpp will try to detect it itself
 	
 	// Try to catch cpu Frequency from /proc/cpuinfo
-#ifdef WIN32
-	nFrequency = 0;
-#else
 	const char* cpuprefix = "cpu MHz";
 	const char* cpunumber = "processor";
 	FILE* F;
@@ -184,17 +172,13 @@ int main(int argc, char* argv[])
 		exit(-1);
 	}
 	
-	#endif
-	
 	ServerConnector *Con = new ServerConnector();
 	Con->Login(sUsername, sPassword, sHostname, nClientID, nFrequency);
 	stWorkInfo stWork;
 	
 	// Check to see if there is something to resume from
 	std::ostringstream sResumeFile;
-#ifndef WIN32
 	sResumeFile << sHomedir << "/.distrrtgen/";
-#endif
 	sResumeFile << ".resume";
 	FILE *file = fopen(sResumeFile.str().c_str(), "rb");
 	if(file != NULL)
@@ -221,11 +205,8 @@ int main(int argc, char* argv[])
 		const char * cFileName;
 		std::string sFileName;
 		std::stringstream szFileName;
-#ifdef WIN32
-		szFileName << stWork.nPartID << ".part"; // Store it in the users home directory
-#else
+
 		szFileName << sHomedir << "/.distrrtgen/" << stWork.nPartID << ".part"; // Store it in the users home directory
-#endif
 		sFileName = szFileName.str();
 		cFileName = sFileName.c_str();
 		FILE *partfile = fopen(cFileName,"rb");
@@ -327,9 +308,7 @@ int main(int argc, char* argv[])
 		while(1)
 		{
 			//renice main thread to 0.
-#ifndef WIN32
 			setpriority(PRIO_PROCESS, 0, 0);
-#endif
 			try
 			{
 				if(nClientID == 0) // This client doesn't have an ID. 
@@ -408,19 +387,16 @@ int main(int argc, char* argv[])
 					
 				}
 				std::stringstream szFileName;
-#ifdef WIN32
-				szFileName << stWork.nPartID << ".part";
-#else
 				szFileName << sHomedir << "/.distrrtgen/" << stWork.nPartID << ".part"; // Store it in the users home directory
-#endif
+
 				// do the work
 				int nReturn;
 				if(nTalkative <= TK_ALL)
 					std::cout << "Starting multithreaded rainbowtable generator..." << std::endl;
-#ifndef WIN32
+
 				if(nTalkative >= TK_WARNINGS)
 					std::freopen("/dev/null", "w", stdout);	
-#endif				
+
 
 				if((nReturn = pGenerator->CalculateTable(szFileName.str(), stWork.nChainCount, stWork.sHashRoutine, stWork.sCharset, stWork.nMinLetters, stWork.nMaxLetters, stWork.nOffset, stWork.nChainLength, stWork.nChainStart, stWork.sSalt)) != 0)
 				{
@@ -429,10 +405,10 @@ int main(int argc, char* argv[])
 					std::cout << "Error id " << nReturn << " received while generating table";
 					return nReturn;
 				}
-#ifndef WIN32
+
 				if(nTalkative >= TK_WARNINGS)
 					std::freopen("/dev/stdout", "w", stdout);	
-#endif
+
 				if(nTalkative <= TK_ALL)
 					std::cout << "Calculations of part " << stWork.nPartID << " completed. Sending data..." << std::endl;
 				while(1)

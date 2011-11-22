@@ -1,21 +1,13 @@
 #ifndef THREAD_H
 #define THREAD_H
-#ifdef WIN32
-#include <windows.h>
-
-#else
 #include <pthread.h>
-#endif
+
 class CThread
 {
 protected:
 	int bTerminateThreadFlag;
 	void *Params;
-#ifdef WIN32
-	HANDLE threadHandle;
-#else
 	pthread_t threadHandle;
-#endif
 public:
 	int IsTerminated() { return bTerminateThreadFlag; }
 	CThread(void);

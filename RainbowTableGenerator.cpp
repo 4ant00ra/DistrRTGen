@@ -50,12 +50,6 @@ CRainbowTableGenerator::CRainbowTableGenerator(int nNumProcessors)
 	m_nCurrentCalculatedChains = 0;
 	if(nNumProcessors == 0)
 	{
-#ifdef WIN32
-		// Get amount of logical processors in Windows
-		SYSTEM_INFO sysInfo;
-		GetSystemInfo(&sysInfo);
-		m_nProcessorCount = sysInfo.dwNumberOfProcessors;
-#else
 		// Get amount of logical processors in Linux
 		char cpuinfo[1024];
 		FILE* fileCPU = fopen("/proc/cpuinfo", "r");
@@ -71,7 +65,6 @@ CRainbowTableGenerator::CRainbowTableGenerator(int nNumProcessors)
 				m_nProcessorCount++;
 		}
 		fclose(fileCPU);
-#endif
 	}
 	else
 	{
@@ -93,9 +86,6 @@ CRainbowTableGenerator::~CRainbowTableGenerator(void)
 
 int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowChainCount, std::string sHashRoutineName, std::string sCharsetName, int nPlainLenMin, int nPlainLenMax, int nRainbowTableIndex, int nRainbowChainLen, uint64 nChainStart, std::string sSalt)
 {
-
-//	std::fstream test("c:\\distrrtgen.log");
-//	std::streambuf *old = std::cout.rdbuf(test.rdbuf());
 	// Setup CChainWalkContext
 	if (!CChainWalkContext::SetHashRoutine(sHashRoutineName))
 	{
@@ -109,8 +99,8 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 		std::cout << "invalid rainbow table index " << nRainbowTableIndex << std::endl;
 		return 3;
 	}
-//	std::cout.rdbuf(old);
-	if(sHashRoutineName == "mscache")// || sHashRoutineName == "lmchall" || sHashRoutineName == "halflmchall")
+
+	if(sHashRoutineName == "mscache")
 	{
 		int salt_length = 0;
 		unsigned char UnicodePlain[MAX_PLAIN_LEN * 2];
@@ -121,38 +111,19 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 			UnicodePlain[i * 2 + 1] = 0x00;
 		}
 
-/*
-		unsigned short cur_salt[256];
-		while( ((unsigned char *)sSalt.c_str())[salt_length]!=0x00 )
-		{
-//	#if ARCH_LITTLE_ENDIAN
-			cur_salt[salt_length] = ((unsigned char *)sSalt.c_str())[salt_length];
-//	#else
-//			cur_salt[salt_length] = ((unsigned char *)sSalt.c_str())[salt_length] << 8;
-//	#endif
-			salt_length ++;
-		}
-		cur_salt[salt_length] = 0;*/
+
 		CChainWalkContext::SetSalt((unsigned char*)UnicodePlain, i*2);
 	}
 	else if(sHashRoutineName == "halflmchall")
 	{
-//		char salt[] = "1122334455667788";
-//		__int64 salt = 0x8877665544332211;
-		//memcpy(salt, , 8);
-//		CChainWalkContext::SetSalt((unsigned char*)&salt, 8);
 	}
 	CChainWalkContext::Dump();	
 
 	// FileName
-//	std::stringstream szFilename;
-//	szFilename << partid << ".rt";
 	std::ofstream Partfile;
 	Partfile.open(sFilename.c_str(), std::ios::out | std::ios::binary | std::ios::app);
 	
 	// Open file
-//	fclose(fopen(szFileName.str().c_str(), "a"));
-//	FILE* file = fopen(szFileName.str().c_str(), "r+b");
 	
 	if (Partfile.is_open() == false)
 	{
@@ -162,7 +133,6 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 	
 	
 	// Check existing chains
-	//unsigned int nDataLen = (unsigned int)GetFileLen(Partfile);
 	
 	long begin,end;
 	
@@ -186,7 +156,6 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 	Partfile.seekp(0, std::ios::end);
 	
 	// Generate rainbow table
-//	std::cout << "generating..." << std::endl;
 	for(int i = 0; i < m_nProcessorCount; i++)
 	{
 		DataGenerationThreadParameters *options = new DataGenerationThreadParameters();;
@@ -197,7 +166,6 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 		m_pThreads[i]->Start(options);
 		nChainStart += 50000;
 	}
-//	nChainStart += (nDataLen / 16);
 	int nCalculatedChains = nDataLen / 16;
 	m_nCurrentCalculatedChains = nCalculatedChains;
 	time_t tStart = time(NULL);
@@ -205,19 +173,13 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 	int nOldCalculatedchains = GetCurrentCalculatedChains();
 	int nTotalChainSpeed = 0;
 	//renice main thread to +19.
-#ifndef WIN32
 	setpriority(PRIO_PROCESS, 0, 19);
-#endif
 	while(nCalculatedChains < nRainbowChainCount)
 	{
 		tEnd = time(NULL);
 		if(tEnd - tStart > 10)
 		{
-#ifdef WIN32
-			system("cls");
-#else
 			system("clear");
-#endif
 			float nPercent = (float)nCalculatedChains / (float)nRainbowChainCount;
 			nPercent *= 100;
 			std::cout << "Working on: Part " << sFilename << "," << nRainbowChainCount << "," << sHashRoutineName << "," << sCharsetName << "," << nPlainLenMin << "," << nPlainLenMax << "," << nRainbowTableIndex << "," << nRainbowChainLen << std::endl;
@@ -263,8 +225,6 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 				nChainStart += 50000;
 			}
 		}
-		//renice main thread to +19.
-		//setpriority(PRIO_PROCESS, 0, 15);
 		Sleep(1);
 
 	}
@@ -285,13 +245,7 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 	std::cout << "Sorting file...";
 	QuickSort(chains, 0, nRainbowChainCount - 1);
 	std::cout << "ok!" << std::endl << "Compressing content before sending";
-	/*
-	partFile = fopen(sFilename.c_str(), "wb");
-	fwrite(chains, 16, nRainbowChainCount, partFile);
-	fclose(partFile);	
-	
-	partFile = fopen(sFilename.c_str(), "rb");
-	*/
+
 	uLongf  len = nRainbowChainCount*1.1+12;
 	unsigned char *buffer = new unsigned char[len];
 	compress((Bytef *)buffer, &len, (Bytef *)chains, nRainbowChainCount * 16);

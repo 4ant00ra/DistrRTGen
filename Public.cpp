@@ -147,20 +147,7 @@ string HexToStr(const unsigned char* pData, int nLen)
 
 	return sRet;
 }
-/*
-unsigned int GetAvailPhysMemorySize()
-{
-#ifdef _WIN32
-		MEMORYSTATUS ms;
-		GlobalMemoryStatus(&ms);
-		return ms.dwAvailPhys;
-#else
-	struct sysinfo info;
-	sysinfo(&info);			// This function is Linux-specific
-	return info.freeram;
-#endif
-}
-*/
+
 void ParseHash(string sHash, unsigned char* pHash, int& nHashLen)
 {
 	int i;

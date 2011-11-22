@@ -1,29 +1,21 @@
 #ifndef _BASESOCKET_H__
 #define _BASESOCKET_H__
 
-// If using Windows, then use Winsock
-#ifdef WIN32
-	#pragma comment(lib, "ws2_32")
-	#include <WinSock2.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/ioctl.h>
+#include <sys/un.h>
+#include <arpa/inet.h>      /* inet_ntoa() to format IP address */
+#include <netinet/in.h>     /* in_addr structure */
+#include <netdb.h>
+#include <errno.h>
+#ifndef INVALID_SOCKET
+	#define INVALID_SOCKET -1
 #endif
-
-#ifndef WIN32 // Linux
-	#include <sys/socket.h>
-	#include <sys/types.h>
-	#include <sys/ioctl.h>
-	#include <sys/un.h>
-	#include <arpa/inet.h>      /* inet_ntoa() to format IP address */
-	#include <netinet/in.h>     /* in_addr structure */
-	#include <netdb.h>
-	#include <errno.h>
-	#ifndef INVALID_SOCKET
-		#define INVALID_SOCKET -1
-	#endif
-	#ifndef SOCKET_ERROR	
-		#define SOCKET_ERROR -1
-	#endif
-	#define SOCKET int
+#ifndef SOCKET_ERROR	
+	#define SOCKET_ERROR -1
 #endif
+#define SOCKET int
 #include "SocketException.h"
 #include <vector>
 class CBaseSocket
@@ -56,22 +48,12 @@ protected:
 	inline std::string GetSocketError()
 	{
 		std::string szErrorDesc;
-#ifdef WIN32
-		char szErrormsg[512];
-		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, 0, WSAGetLastError(), 0, szErrormsg, 511, NULL);
-		szErrorDesc = szErrormsg;
-#else
 		szErrorDesc = strerror(errno);
-#endif
 		return szErrorDesc;
 	}
 	inline int GetSocketErrorCode()
 	{
-#ifdef WIN32
-		return WSAGetLastError();
-#else
 		return errno;
-#endif
 	}
 };
 

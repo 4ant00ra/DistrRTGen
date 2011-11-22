@@ -4,19 +4,6 @@
 int CBaseSocket::nAmountSockets = 0;
 CBaseSocket::CBaseSocket(int nSocketType, int nProtocol)
 {
-#ifdef WIN32
-	// Check if WSAStartup has already been run.
-	if (nAmountSockets == 0) 
-	{
-		WSADATA info;
-		if (WSAStartup(MAKEWORD(2,0), &info)) 
-		{
-			std::ostringstream szError;
-			szError << "Error running WSAStartup(). Reason: " << WSAGetLastError();
-			throw new SocketException(GetSocketErrorCode(), szError.str());
-		}
-    }
-#endif
 	++nAmountSockets;
 	rSocket = socket(AF_INET, nSocketType, nProtocol);
 	if(rSocket == INVALID_SOCKET)
@@ -36,20 +23,9 @@ CBaseSocket::~CBaseSocket()
 {
 	if(rSocket != INVALID_SOCKET)
 	{
-#ifdef WIN32
-	// Named closesocket() on WIN32
-		closesocket(rSocket);
-#else
 		close(rSocket);
-#endif
 	}
 	--nAmountSockets;
-#ifdef WIN32
-	if(nAmountSockets == 0)
-	{
-//		WSACleanup();
-	}
-#endif
 }
 
 std::string CBaseSocket::GetPeerName()
@@ -57,11 +33,7 @@ std::string CBaseSocket::GetPeerName()
 	sockaddr_in name;
 	std::string ip;
 	int namelen = sizeof(name);
-#ifdef WIN32
-	if(getpeername(rSocket, (sockaddr *)&name, &namelen) == SOCKET_ERROR)
-#else
 	if(getpeername(rSocket, (sockaddr *)&name, (socklen_t *)&namelen) == SOCKET_ERROR)
-#endif
 	{
 		std::ostringstream szError;
 		szError << "Error while getting peer name: " << GetSocketError();
@@ -116,11 +88,7 @@ void CBaseSocket::operator >>(std::vector<unsigned char> &Data)
     u_long arg = 0;
 	while(arg == 0)
 	{
-#ifdef WIN32
-		if (ioctlsocket(rSocket, FIONREAD, &arg) == SOCKET_ERROR)
-#else
 		if (ioctl(rSocket, FIONREAD, &arg) == SOCKET_ERROR)
-#endif
 		{
 			std::ostringstream szError;
 			szError << "Error while ioctlsocket(): " << GetSocketError();
@@ -147,18 +115,13 @@ std::string CBaseSocket::ReceiveBytes(void *argPtr, void (*callback)(void *arg, 
 	for ( ; ; ) 
 	{
 		u_long arg = 0;
-#ifdef WIN32
-		if (ioctlsocket(rSocket, FIONREAD, &arg) == SOCKET_ERROR)
-#else
 		if (ioctl(rSocket, FIONREAD, &arg) == SOCKET_ERROR)
-#endif
 		{
 			std::ostringstream szError;
 			szError << "Error while running ioctl(): " << GetSocketError();
 			throw new SocketException(GetSocketErrorCode(), szError.str());
 		}
-//    if (arg == 0 && ret.size() > 0)
-  //    break;
+		
 		if (arg > 8192) arg = 8192;
 
 		int rv = recv(rSocket, buf, sizeof(buf), 0);
