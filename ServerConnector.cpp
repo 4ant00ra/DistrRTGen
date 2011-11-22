@@ -13,11 +13,11 @@
 #include "tinyxml.h"
 
 #define SERVER_PORT 80
-#define SERVER_NAME "http://distributed.freerainbowtables.com/server.php"
-#define UPLOAD_URL "http://distributed.freerainbowtables.com/upload.php"
+#define SERVER_NAME "http://distributed.zwibits.org:8080/server.php"
+#define UPLOAD_URL "http://distributed.zwibits.org:8080/upload.php"
 #define _FILE_OFFSET_BITS 64
 #ifndef VERSION
-	#define VERSION "3.0 LX"
+	#define VERSION "1.0 LX"
 #endif
 
 enum TALKATIVE
