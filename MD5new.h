@@ -3,7 +3,7 @@
  *
  *  Simple C++ header file for Optimized md5 hash routine
  *  Mon Nov  5 19:36:44 2007
- *  
+ *
  *  <alexis.dagues@gmail.com>
  ****************************************************************************/
 

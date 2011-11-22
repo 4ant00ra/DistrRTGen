@@ -75,7 +75,7 @@ des_ecb_encrypt((des_cblock*)pSalt, (des_cblock*)&pHash[8], ks, DES_ENCRYPT);
 setup_des_key(&pre_lmresp[14], ks);
 des_ecb_encrypt((des_cblock*)pSalt, (des_cblock*)&pHash[16], ks, DES_ENCRYPT);
 
-} 
+}
 
 void HashHALFLMCHALL(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const unsigned char* pSalt, int nSaltLen)
 {	
@@ -91,7 +91,7 @@ void HashHALFLMCHALL(unsigned char* pPlain, int nPlainLen, unsigned char* pHash,
 
 	setup_des_key(pre_lmresp, ks);
 	des_ecb_encrypt((des_cblock*)salt, (des_cblock*)pHash, ks, DES_ENCRYPT);
-} 
+}
 
 void HashNTLM(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const unsigned char *pSalt, int nSaltLength)
 {
@@ -106,7 +106,7 @@ void HashNTLM(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const 
 	#ifndef _FAST_HASH_
 		MD4(UnicodePlain, nPlainLen * 2, pHash);
 	#else
-		MD4_CTX ctx;   
+		MD4_CTX ctx;
     	MD4_Init(&ctx);
     	MD4_Update(&ctx, UnicodePlain, nPlainLen * 2);
     	MD4_Final((unsigned char *) pHash, &ctx);
@@ -119,7 +119,7 @@ void HashMD2(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const u
 	#ifndef _FAST_HASH_
 		MD2(pPlain, nPlainLen, pHash);
 	#else
-		MD2_CTX ctx;   
+		MD2_CTX ctx;
     	MD2_Init(&ctx);
     	MD2_Update(&ctx, pPlain, nPlainLen);
     	MD2_Final((unsigned char *) pHash, &ctx);
@@ -132,7 +132,7 @@ void HashMD4(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const u
 	#ifndef _FAST_HASH_
 		MD4(pPlain, nPlainLen, pHash);
 	#else
-		MD4_CTX ctx;   
+		MD4_CTX ctx;
     	MD4_Init(&ctx);
     	MD4_Update(&ctx, pPlain, nPlainLen);
     	MD4_Final((unsigned char *) pHash, &ctx);
@@ -148,7 +148,7 @@ void HashMD5(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const u
    	#elif _FAST_MD5_
    		MD5_NEW(pPlain, nPlainLen, pHash); /* seems to be not thread safe ? */	
 	#else
-		MD5_CTX ctx;   
+		MD5_CTX ctx;
    		MD5_Init(&ctx);
    		MD5_Update(&ctx, pPlain, nPlainLen);
    		MD5_Final((unsigned char *) pHash, &ctx);
@@ -190,7 +190,7 @@ void HashMSCACHE(unsigned char *pPlain, int nPlainLen, unsigned char* pHash, con
 	#ifndef _FAST_HASH_
 		MD4(buf, MSCACHE_HASH_SIZE + nSaltLength, pHash);
 	#else
-		MD4_CTX ctx;   
+		MD4_CTX ctx;
     	MD4_Init(&ctx);
     	MD4_Update(&ctx, buf, MSCACHE_HASH_SIZE + nSaltLength);
     	MD4_Final((unsigned char *) pHash, &ctx);
@@ -202,11 +202,11 @@ void HashMSCACHE(unsigned char *pPlain, int nPlainLen, unsigned char* pHash, con
 // Code for MySQL password hashing
 //*********************************************************************************
 
-inline void mysql_hash_password_323(unsigned long *result, const char *password) 
+inline void mysql_hash_password_323(unsigned long *result, const char *password)
 {
   register unsigned long nr=1345345333L, add=7, nr2=0x12345671L;
   unsigned long tmp;
-  for (; *password ; password++) 
+  for (; *password ; password++)
   {
     if (*password == ' ' || *password == '\t') continue;
 	tmp= (unsigned long) (unsigned char) *password;

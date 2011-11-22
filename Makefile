@@ -33,7 +33,7 @@ CONFFILE := $(CONFDIR)/distrrtgen.conf
 DEBUG_CFLAGS     :=  -D_FAST_HASH_ -D_FILE_OFFSET_BITS=64 -Wall -Wno-format -g -DDEBUG
 RELEASE_CFLAGS   :=  -D_FAST_MD5_ -D_FAST_HASH_ -D_FILE_OFFSET_BITS=64 -Wno-unknown-pragmas -Wno-format -march=native -O2
 
-LIBS		 := -lz -lcrypto -lpthread -lcurl -lgsoap
+LIBS		 := -lz -lcrypto -lpthread -lcurl
 
 DEBUG_CXXFLAGS   := ${DEBUG_CFLAGS} 
 RELEASE_CXXFLAGS := ${RELEASE_CFLAGS}
@@ -94,7 +94,7 @@ all: ${OUTPUT}
 # Source files
 #****************************************************************************
 
-SRCS := soapC.c soapClient.c stdsoap2.cpp tinyxml.cpp tinyxmlparser.cpp tinyxmlerror.cpp tinystr.cpp Public.cpp ChainWalkContext.cpp HashAlgorithm.cpp HashRoutine.cpp rtgen_client.cpp BaseSocket.cpp ClientSocket.cpp Exception.cpp SocketException.cpp ServerConnector.cpp Thread.cpp DataGenerationThread.cpp RainbowTableGenerator.cpp MD5new.cpp WU_mgr.cpp
+SRCS := Public.cpp ChainWalkContext.cpp HashAlgorithm.cpp HashRoutine.cpp rtgen_client.cpp BaseSocket.cpp ClientSocket.cpp Exception.cpp SocketException.cpp ServerConnector.cpp Thread.cpp DataGenerationThread.cpp RainbowTableGenerator.cpp MD5new.cpp
 
 # Add on the sources for libraries
 SRCS := ${SRCS}
@@ -130,6 +130,3 @@ clean:
 	-rm -f core ${OBJS} ${OUTPUT}
 
 
-tinyxml.o: tinyxml.h tinystr.h
-tinyxmlparser.o: tinyxml.h tinystr.h
-tinyxmlerror.o: tinyxml.h tinystr.h

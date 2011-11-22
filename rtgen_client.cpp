@@ -15,7 +15,6 @@
 #include "Public.h"
 #include "RainbowTableGenerator.h"
 #include "ServerConnector.h"
-#include "WU_mgr.h"
 
 #define CPU_INFO_FILENAME "/proc/cpuinfo"
 #define MAX_PART_SIZE 8000000 //size of PART file
@@ -35,8 +34,7 @@ int main(int argc, char* argv[])
 	double nFrequency;
 	std::string sHomedir;
 	int nNumProcessors = 0;
-	int nClientID;
-    int nTalkative = TK_ALL;
+	int nTalkative = TK_ALL;
 	
 	if(argc > 1)
 	{
@@ -59,24 +57,7 @@ int main(int argc, char* argv[])
 		if(nTalkative <= TK_ALL)
 			std::cout << "Compiled with Fast and thread unsafe MD5 Hashroutine" << std::endl;
 	#endif
-	// First load the client identification information
-	std::ostringstream sClientInfo;
-	struct passwd *userinfo;
-	userinfo = getpwuid(getuid());
-	sHomedir = userinfo->pw_dir;
-	sClientInfo << sHomedir  << "/.distrrtgen/";
 	
-	sClientInfo << ".client";
-	std::fstream fClientInfo(sClientInfo.str().c_str(), std::fstream::in);
-
-	if(fClientInfo.is_open() == false) nClientID = 0;
-	else 
-	{
-		fClientInfo >> nClientID;
-		fClientInfo.close();
-	}
-	
-	// If numprocessors is 0, RainbowTableGenerator.cpp will try to detect it itself
 	
 	// Try to catch cpu Frequency from /proc/cpuinfo
 	const char* cpuprefix = "cpu MHz";
@@ -84,6 +65,7 @@ int main(int argc, char* argv[])
 	char cpuline[300+1];
 	char* pos;
 	int ok = 0;
+	
 	nNumProcessors = 0;
 	
 	// open cpuinfo system file
@@ -93,19 +75,19 @@ int main(int argc, char* argv[])
 	//read lines
 	while (!feof(F))
   	{
-    fgets (cpuline, sizeof(cpuline), F);
-    // test if it's the frequency line
-    if (!strncmp(cpuline, cpuprefix, strlen(cpuprefix)))
-    	{
-      		// Yes, grep the frequency
-      		pos = strrchr (cpuline, ':') +2;
-      		if (!pos) break;
-      		if (pos[strlen(pos)-1] == '\n') pos[strlen(pos)-1] = '\0';
-      		strcpy (cpuline, pos);
-      		strcat (cpuline,"e6");
-      		nFrequency = atof (cpuline)/1000000;
-      		ok = 1;
-    	}
+	fgets (cpuline, sizeof(cpuline), F);
+	// test if it's the frequency line
+	if (!strncmp(cpuline, cpuprefix, strlen(cpuprefix)))
+		{
+	  		// Yes, grep the frequency
+	  		pos = strrchr (cpuline, ':') +2;
+	  		if (!pos) break;
+	  		if (pos[strlen(pos)-1] == '\n') pos[strlen(pos)-1] = '\0';
+	  		strcpy (cpuline, pos);
+	  		strcat (cpuline,"e6");
+	  		nFrequency = atof (cpuline)/1000000;
+	  		ok = 1;
+		}
   	}
 	nNumProcessors = sysconf(_SC_NPROCESSORS_ONLN);
 	if(nTalkative <= TK_ALL)
@@ -181,7 +163,7 @@ int main(int argc, char* argv[])
 					exit(-1);
 				}
   				else
-    				if(nTalkative <= TK_ALL)
+					if(nTalkative <= TK_ALL)
 						std::cout << "File successfully deleted." << std::endl;
 			}
 		}
@@ -261,21 +243,6 @@ int main(int argc, char* argv[])
 			setpriority(PRIO_PROCESS, 0, 0);
 			try
 			{
-				if(nClientID == 0) // This client doesn't have an ID. 
-				{   // We connect to the server and register ourself
-					std::fstream fClient(sClientInfo.str().c_str(), std::fstream::out);
-					if(fClient.is_open() == false)
-					{
-						std::cout << "Could not open " << sClientInfo.str() << " for writing" << std::endl;
-						nClientID = 0;
-					}
-					else 
-					{
-						fClient << nClientID;
-						fClient.close();
-					}
-				}
-
 				// If there is no work to do, request some!
 				if(stWork.sCharset == "")
 				{
@@ -398,8 +365,8 @@ int main(int argc, char* argv[])
 				Sleep(CLIENT_WAIT_TIME_SECONDS * 1000);
 			}
 		}	
-	} 
-	catch (...) 
+	}
+	catch (...)
 	{
 		if(nTalkative <= TK_ERRORS)
 			std::cerr << "Unhandled exception :(" << std::endl;

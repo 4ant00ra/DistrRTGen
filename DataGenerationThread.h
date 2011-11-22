@@ -15,11 +15,11 @@ public:
 	int GetIsDataReadyFlag() { return bDataReady; }
 	void ClearDataReadyFlag() { bDataReady = 0; }
 	unsigned const char *GetData() { return zDataChunk; }
-	int GetChainsCalculated() 
-	{ 
+	int GetChainsCalculated()
+	{
 		int tmp = m_nChainsCalculated;
 		m_nChainsCalculated = 0;
-		return tmp; 
+		return tmp;
 	}
 private:
 	unsigned char zBuffer[DATA_CHUNK_SIZE]; // Used to store temporary data. Can contain 20000 chains (32kb)

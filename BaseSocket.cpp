@@ -58,7 +58,7 @@ void CBaseSocket::operator <<(std::vector<unsigned char> Data)
     unsigned int i;
     for (i=0; i < Data.size(); i++)
 	{
-         szData[i] = Data[i]; 
+         szData[i] = Data[i];
 	}
 	if(send(rSocket, szData, Data.size(), 0) == SOCKET_ERROR)
 	{
@@ -73,7 +73,7 @@ void CBaseSocket::operator >>(std::string &Line)
 {
 	char buf[8096];
 	memset(buf, 0x00, sizeof(buf));
-	int nBytes = recv(rSocket, buf, sizeof(buf), 0); 
+	int nBytes = recv(rSocket, buf, sizeof(buf), 0);
 	if(nBytes == SOCKET_ERROR)
 	{
 		std::ostringstream szError;
@@ -96,7 +96,7 @@ void CBaseSocket::operator >>(std::vector<unsigned char> &Data)
 		}
 	}
 	char buf[8096];
-	int nBytes = recv(rSocket, buf, sizeof(buf), 0); 
+	int nBytes = recv(rSocket, buf, sizeof(buf), 0);
 	if(nBytes == SOCKET_ERROR)
 	{
 		std::ostringstream szError;
@@ -108,11 +108,11 @@ void CBaseSocket::operator >>(std::vector<unsigned char> &Data)
         Data.push_back(buf[i]); 	
 	}
 }
-std::string CBaseSocket::ReceiveBytes(void *argPtr, void (*callback)(void *arg, size_t TotalByteCount), int amountBytes) 
+std::string CBaseSocket::ReceiveBytes(void *argPtr, void (*callback)(void *arg, size_t TotalByteCount), int amountBytes)
 {
 	std::string ret;
 	char buf[8192];
-	for ( ; ; ) 
+	for ( ; ; )
 	{
 		u_long arg = 0;
 		if (ioctl(rSocket, FIONREAD, &arg) == SOCKET_ERROR)
@@ -135,7 +135,7 @@ std::string CBaseSocket::ReceiveBytes(void *argPtr, void (*callback)(void *arg, 
 	return ret;
 }
 
-void CBaseSocket::SendBytes(const char *s, int length) 
+void CBaseSocket::SendBytes(const char *s, int length)
 {
 	if(send(rSocket,s,length,0) == SOCKET_ERROR)
 	{

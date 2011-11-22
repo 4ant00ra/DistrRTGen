@@ -4,7 +4,6 @@
 #include <string>
 
 #include "ClientSocket.h"
-#include "soapH.h"
 #include "Public.h"
 
 #define TRANSFER_NOTREGISTERED 2
@@ -47,12 +46,6 @@ private:
 class ServerConnector
 {
 private:
-	struct soap m_soap;
-	ns1__Credentials credentials;
-	ns1__ArrayOfCPU cpulist;
-	ns1__CPU cpu;
-
-	ns1__MachineInfo m_machineInfo;
 public:
 	ServerConnector(void);
 public:

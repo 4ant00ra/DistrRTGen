@@ -10,7 +10,7 @@
 #include "HashRoutine.h"
 #include "Public.h"
 
-class CChainWalkContext 
+class CChainWalkContext
 {
 public:
 	CChainWalkContext();

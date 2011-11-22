@@ -6,7 +6,7 @@ CClientSocket::CClientSocket(int nSocketType, int nProtocol, std::string szHost,
 	std::string error;
 
 	hostent *he;
-	if ((he = gethostbyname(szHost.c_str())) == 0) 
+	if ((he = gethostbyname(szHost.c_str())) == 0)
 	{
 		std::ostringstream szError;
 		szError << "Error while trying to resolve hostname '" << szHost << "' : " << GetSocketError();
@@ -17,9 +17,9 @@ CClientSocket::CClientSocket(int nSocketType, int nProtocol, std::string szHost,
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(nPort);
 	addr.sin_addr = *((in_addr *)he->h_addr);
-	memset(&(addr.sin_zero), 0, 8); 
+	memset(&(addr.sin_zero), 0, 8);
 
-	if (connect(rSocket, (sockaddr *) &addr, sizeof(sockaddr)) == SOCKET_ERROR) 
+	if (connect(rSocket, (sockaddr *) &addr, sizeof(sockaddr)) == SOCKET_ERROR)
 	{
 		std::ostringstream szError;
 		szError << "Error while trying to connect to '" << szHost << "' : " << GetSocketError();

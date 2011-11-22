@@ -13,7 +13,7 @@ using namespace std;
 
 typedef void (*HASHROUTINE)(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const unsigned char* pSalt, int nSaltLen);
 
-class CHashRoutine  
+class CHashRoutine
 {
 public:
 	CHashRoutine();

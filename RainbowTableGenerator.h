@@ -15,7 +15,7 @@ public:
 	~CRainbowTableGenerator(void);
 	int CalculateTable(std::string sFilename, int nRainbowChainCount, std::string sHashRoutineName, std::string sCharsetName, int nPlainLenMin, int nPlainLenMax, int nRainbowTableIndex, int nRainbowChainLen, uint64 nChainStart, std::string sSalt = "");
 
-	int GetCurrentCalculatedChains() 
+	int GetCurrentCalculatedChains()
 	{
 		if(m_nCurrentCalculatedChains == -1) return 0;
 		for(int i = 0; i < m_nProcessorCount; i++)

@@ -1075,7 +1075,7 @@ void MD5_NEW( unsigned char * pData, int len, unsigned char * pDigest)
 
 			/* Handle any remaining bytes of data. */
 			memcpy(in, pData, len);
-		    
+		
 			//MD5FINAL STARTS HERE
 			//===========================================
 			unsigned count = len & 0x3F;
@@ -1174,7 +1174,7 @@ void MD5_NEW( unsigned char * pData, int len, unsigned char * pDigest)
 				buf[2] += c;
 				buf[3] += d;
 				//END OF MD5TRANSFORM CODE
-				//====================================================	    
+				//====================================================	
 
 				// Now fill the next block with 56 bytes
 				memset(in, 0, 56);
@@ -1184,7 +1184,7 @@ void MD5_NEW( unsigned char * pData, int len, unsigned char * pDigest)
 				// Pad block to 56 bytes
 				memset(p, 0, count - 8);
 			}
-		    
+		
 
 			/* Append length in bits and transform */
 			((uint32 *) in)[14] = len << 3;
@@ -1274,7 +1274,7 @@ void MD5_NEW( unsigned char * pData, int len, unsigned char * pDigest)
 			buf[3] += d;
 			//END OF MD5TRANSFORM CODE
 			//====================================================
-			    
+			
 			memcpy(pDigest, buf, 16);
 			return;
 

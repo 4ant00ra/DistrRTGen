@@ -39,7 +39,7 @@ public:
 	void operator >> (std::string &Line);
 	// Used to recieve data
 	void operator >> (std::vector<unsigned char> &Data);
-	std::string ReceiveBytes(void *argPtr, void (*callback)(void *arg, size_t TotalByteCount), int amountBytes); 
+	std::string ReceiveBytes(void *argPtr, void (*callback)(void *arg, size_t TotalByteCount), int amountBytes);
 	void SendBytes(const char *s, int length);
 	// Used for FD_SET to return the socket
 	operator SOCKET() const {
