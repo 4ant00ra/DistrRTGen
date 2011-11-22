@@ -65,7 +65,7 @@ when locally allocated data exceeds 64K.
 # pragma convert(819)	/* EBCDIC to ASCII */
 #endif
 
-#include "stdsoap2.h"
+#include "stdsoap29k.h"
 
 #ifdef __BORLANDC__
 # pragma warn -8060

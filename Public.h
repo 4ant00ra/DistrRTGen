@@ -7,6 +7,8 @@
 #ifndef _PUBLIC_H
 #define _PUBLIC_H
 
+#include <cstdlib>
+#include <cstring>
 #include <list>
 #include <stdio.h>
 #include <string>

@@ -31,9 +31,9 @@ CONFDIR  := ~/.distrrtgen
 CONFFILE := $(CONFDIR)/distrrtgen.conf
 
 DEBUG_CFLAGS     :=  -D_FAST_HASH_ -D_FILE_OFFSET_BITS=64 -Wall -Wno-format -g -DDEBUG
-RELEASE_CFLAGS   :=  -D_FAST_MD5_ -D_FAST_HASH_ -D_FILE_OFFSET_BITS=64 -Wno-unknown-pragmas -Wno-format -march=x86-64 -O2
+RELEASE_CFLAGS   :=  -D_FAST_MD5_ -D_FAST_HASH_ -D_FILE_OFFSET_BITS=64 -Wno-unknown-pragmas -Wno-format -march=native -O2
 
-LIBS		 := -lssl -lpthread -lcurl -lgsoap
+LIBS		 := -lz -lcrypto -lpthread -lcurl -lgsoap
 
 DEBUG_CXXFLAGS   := ${DEBUG_CFLAGS} 
 RELEASE_CXXFLAGS := ${RELEASE_CFLAGS}
