@@ -97,7 +97,6 @@ int main(int argc, char* argv[])
 		std::cout << sConf.str() << " could not be opened - " << strerror(errno) << std::endl;
 		return 1;
 	}
-//	std::string sUsername, sPassword;
 	if( !(fConfig >> sUsername) )
 	{
 		std::cout << "Missing username line, check version of " << sConf.str() << std::endl;
@@ -134,13 +133,6 @@ int main(int argc, char* argv[])
 	}
 	
 	wu_mgr *WUFile = new wu_mgr();
-	//WUFile->read("test.xml");
-	
-	
-	//if(sProcessors.substr(7).length() > 0) // Check if processor count is manually configured
-	//{
-	//	nNumProcessors = atoi(sProcessors.substr(7).c_str());
-	//}
 	// If numprocessors is 0, RainbowTableGenerator.cpp will try to detect it itself
 	
 	// Try to catch cpu Frequency from /proc/cpuinfo
@@ -163,13 +155,6 @@ int main(int argc, char* argv[])
 	while (!feof(F))
   	{
     fgets (cpuline, sizeof(cpuline), F);
-	//test if it's a processor id line
-	/* deprecated
-	if (!strncmp(cpuline, cpunumber, strlen(cpunumber)))
-	{
-		
-	}
-    */
     // test if it's the frequency line
     if (!strncmp(cpuline, cpuprefix, strlen(cpuprefix)))
     	{
@@ -181,7 +166,6 @@ int main(int argc, char* argv[])
       		strcat (cpuline,"e6");
       		nFrequency = atof (cpuline)/1000000;
       		ok = 1;
-      		//break;  //bug : http://www.freerainbowtables.com/phpBB3/viewtopic.php?f=4&p=916&sid=53804aa79a7bc4bb06cff38481889cf7#p909
     	}
   	}
 	nNumProcessors = sysconf(_SC_NPROCESSORS_ONLN);
@@ -323,24 +307,10 @@ int main(int argc, char* argv[])
 						Sleep(CLIENT_WAIT_TIME_SECONDS * 1000);
 					}
 				}
-				
-				//remove(szFileName.str().c_str());		
-				//stWork.sCharset = ""; // Blank out the charset to indicate the work is complete
-				/*std::ostringstream sResumeFile;
-				#ifndef WIN32
-					sResumeFile << sHomedir << "/.distrrtgen/";
-				#endif
-				sResumeFile << ".resume";*/
-				//unlink(sResumeFile.str().c_str());
-				
+
 		}
 		else
 		{
-			
-			// We delete the old part file
-			/*char * cDeleteFile;
-			sprintf(cDeleteFile, "/bin/rm -f %s", cFileName);
-			system(cDeleteFile);*/
 			if(nTalkative <= TK_ALL)	
 				std::cout << "Delete Part file and restart interrupted computations..." << std::endl;
 			remove(szFileName.str().c_str());
@@ -364,7 +334,6 @@ int main(int argc, char* argv[])
 			{
 				if(nClientID == 0) // This client doesn't have an ID. 
 				{   // We connect to the server and register ourself
-					//ServerConnector *Con = new ServerConnector();
 					if(nTalkative <= TK_ALL)
 						std::cout << "Connecting to server to perform first time registration...";
 					if(nTalkative <= TK_ALL)
@@ -509,9 +478,6 @@ int main(int argc, char* argv[])
 						Sleep(CLIENT_WAIT_TIME_SECONDS * 1000);
 					}
 				}
-				//remove(szFileName.str().c_str());		
-				//stWork.sCharset = ""; // Blank out the charset to indicate the work is complete
-				//unlink(sResumeFile.str().c_str());
 			}
 			catch(SocketException *ex)
 			{
