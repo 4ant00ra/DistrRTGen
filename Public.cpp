@@ -3,6 +3,7 @@
 
    Copyright (C) Zhu Shuanglei <shuanglei@hotmail.com>
 */
+#include <sstream>
 #include "Public.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -143,6 +144,15 @@ void ParseHash(string sHash, unsigned char* pHash, int& nHashLen)
 	}
 
 	nHashLen = sHash.size() / 2;
+}
+
+int ston(string x)
+{
+	int res;
+	stringstream ss;
+	ss << x;
+	ss >> res;
+	return res;
 }
 
 void Logo()

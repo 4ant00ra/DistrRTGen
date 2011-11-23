@@ -21,6 +21,19 @@ using namespace std;
 #define MIN_HASH_LEN  8
 #define uint64 u_int64_t
 
+typedef struct
+{
+	unsigned int nPartID;
+	unsigned int nMinLetters;
+	unsigned int nMaxLetters;
+	unsigned int nOffset;
+	unsigned int nChainLength;
+	unsigned int nChainCount;
+	uint64 nChainStart;
+	std::string sHashRoutine;
+	std::string sCharset;
+	std::string sSalt;
+} stWorkInfo;
 
 struct RainbowChain
 {
@@ -37,6 +50,8 @@ string uint64tohexstr(uint64 n);
 string HexToStr(const unsigned char* pData, int nLen);
 unsigned int GetAvailPhysMemorySize();
 void ParseHash(string sHash, unsigned char* pHash, int& nHashLen);
+
+int ston(string);
 
 void Logo();
 

@@ -11,10 +11,10 @@
 #include <sys/types.h>
 #include <time.h>
 
+#include "ClientSocket.h"
 #include "config.h"
 #include "Public.h"
 #include "RainbowTableGenerator.h"
-#include "ServerConnector.h"
 
 #define CPU_INFO_FILENAME "/proc/cpuinfo"
 #define MAX_PART_SIZE 8000000 //size of PART file
@@ -30,7 +30,8 @@ enum TALKATIVE
 
 
 int main(int argc, char* argv[])
-{	
+{
+	int nResult;
 	double nFrequency;
 	std::string sHomedir;
 	int nNumProcessors = 0;
@@ -47,7 +48,7 @@ int main(int argc, char* argv[])
 			nTalkative = TK_ERRORS;
 		}
 	}
-	nTalkative = TK_ALL;
+
 	// with which MACRO I have been compiled with..
 	#ifdef _FAST_HASH_
 		if(nTalkative <= TK_ALL)
@@ -105,12 +106,11 @@ int main(int argc, char* argv[])
 		exit(-1);
 	}
 	
-	ServerConnector *Con = new ServerConnector();
+	CClientSocket *Con = new CClientSocket(SOCK_STREAM, 0, SERVER, PORT);
 	stWorkInfo stWork;
 	
 	// Check to see if there is something to resume from
 	std::ostringstream sResumeFile;
-	sResumeFile << sHomedir << "/.distrrtgen/";
 	sResumeFile << ".resume";
 	FILE *file = fopen(sResumeFile.str().c_str(), "rb");
 	if(file != NULL)
@@ -138,238 +138,132 @@ int main(int argc, char* argv[])
 		std::string sFileName;
 		std::stringstream szFileName;
 
-		szFileName << sHomedir << "/.distrrtgen/" << stWork.nPartID << ".part"; // Store it in the users home directory
+		szFileName << stWork.nPartID << ".part"; // Store it in the users home directory
 		sFileName = szFileName.str();
 		cFileName = sFileName.c_str();
 		FILE *partfile = fopen(cFileName,"rb");
-		long size;
 		if(partfile != NULL)
 		{
-			fseek(partfile,0,SEEK_END);
-			size=ftell(partfile);
-			rewind(partfile);
-			fclose(partfile);
 			if(nTalkative <= TK_ALL)
-				std::cout << "Part file size (in bytes) : " << size << std::endl;
-			
-			if (size != MAX_PART_SIZE)
+				std::cout << "Deleting " << cFileName << std::endl;
+			if( remove(cFileName) != 0 )
 			{
 				if(nTalkative <= TK_ALL)
-					std::cout << "Deleting " << cFileName << std::endl;
-				if( remove(cFileName) != 0 )
-				{
-					if(nTalkative <= TK_ALL)
-						std::cout << "Error deleting file, please manually delete it." << std::endl;
-					exit(-1);
-				}
-  				else
-					if(nTalkative <= TK_ALL)
-						std::cout << "File successfully deleted." << std::endl;
+					std::cout << "Error deleting file, please manually delete it." << std::endl;
+				exit(-1);
 			}
+			else
+				if(nTalkative <= TK_ALL)
+					std::cout << "File successfully deleted." << std::endl;
 		}
 		else
 		{
 			if(nTalkative <= TK_ALL)
 				std::cout << "No unfinished part file." << std::endl;
 		}
-			
-		if (size==MAX_PART_SIZE)
+	}
+	if(nTalkative <= TK_ALL)
+		std::cout << "Initializing DistrRTgen " << VERSION << std::endl;
+	CRainbowTableGenerator *pGenerator = new CRainbowTableGenerator(nNumProcessors);
+	if(nTalkative <= TK_ALL)
+		std::cout << "Generating using " << pGenerator->GetProcessorCount() << " processor(s)..." << std::endl;
+
+	while(1)
+	{
+		//renice main thread to 0.
+		setpriority(PRIO_PROCESS, 0, 0);
+		// If there is no work to do, request some!
+		if(stWork.sCharset == "")
 		{
 			if(nTalkative <= TK_ALL)
-				std::cout << "File already completed... try uploading" << std::endl;
-			while(1)
-				{
-					try
-					{
-						int nResult = Con->SendFinishedWork(stWork.nPartID, szFileName.str());
-						switch(nResult)			
-						{
-						case TRANSFER_OK:
-							if(nTalkative <= TK_ALL)
-								std::cout << "Data delivered!" << std::endl;
-								remove(szFileName.str().c_str());		
-								stWork.sCharset = ""; // Blank out the charset to indicate the work is complete
-								unlink(sResumeFile.str().c_str());
-							break;
-						case TRANSFER_NOTREGISTERED:
-							if(nTalkative <= TK_ALL)
-								std::cout << "Data was not accepted by the server. Dismissing" << std::endl;
-								remove(szFileName.str().c_str());		
-								stWork.sCharset = ""; //We let the charset is order to retry
-								unlink(sResumeFile.str().c_str()); //We remove the part but not the resume file, to restart
-							break;
-						case TRANSFER_GENERAL_ERROR:
-							if(nTalkative <= TK_ALL)
-								std::cout << "Could not transfer data to server. Retrying in " << CLIENT_WAIT_TIME_SECONDS / 60 << " minutes" << std::endl;
-							Sleep(CLIENT_WAIT_TIME_SECONDS * 1000);
-							continue;
-						}
-						break;
-					}
-					catch(SocketException *ex)
-					{
-						std::cout << "Error connecting to server: " << ex->GetErrorMessage() << ". Retrying in " << CLIENT_WAIT_TIME_SECONDS / 60 << " minutes" << std::endl;
-						delete ex;
-						Sleep(CLIENT_WAIT_TIME_SECONDS * 1000);
-					}
-					catch(ConnectionException *ex)
-					{
-						if(ex->GetErrorLevel() >= nTalkative)
-							std::cout << ex->GetErrorMessage() << ". Retrying in " << CLIENT_WAIT_TIME_SECONDS / 60 << " minutes" << std::endl;
-						delete ex;
-						Sleep(CLIENT_WAIT_TIME_SECONDS * 1000);
-					}
-				}
-
-		}
-		else
-		{
-			if(nTalkative <= TK_ALL)	
-				std::cout << "Delete Part file and restart interrupted computations..." << std::endl;
-			remove(szFileName.str().c_str());
-		}
-	}
-	try
-	{
-		if(nTalkative <= TK_ALL)
-			std::cout << "Initializing DistrRTgen " << VERSION << std::endl;
-		CRainbowTableGenerator *pGenerator = new CRainbowTableGenerator(nNumProcessors);
-		if(nTalkative <= TK_ALL)
-			std::cout << "Generating using " << pGenerator->GetProcessorCount() << " processor(s)..." << std::endl;
-
-		while(1)
-		{
-			//renice main thread to 0.
-			setpriority(PRIO_PROCESS, 0, 0);
-			try
 			{
-				// If there is no work to do, request some!
-				if(stWork.sCharset == "")
-				{
-					if(nTalkative <= TK_ALL)
-					{
-						std::cout << "OK" << std::endl;
-						std::cout << "Requesting work...";
-					}
-					int errorCode = Con->RequestWork(&stWork);
-
-					if(errorCode > 1)
-					{
-						if(errorCode == 1)
-						{
-							std::cout << "Failed to request work. Invalid username/password combination" << std::endl;
-						}
-						else
-						{
-							std::cout << "Failed to request work. Unknown error code recieved" << errorCode << " recieved" << std::endl;
-						}
-						return 1;						
-					}					
-					if(nTalkative <= TK_ALL)
-						std::cout << "work received !" << std::endl;
-					FILE *fileResume = fopen(sResumeFile.str().c_str(), "wb");
-					if(fileResume == NULL)
-					{
-						std::cout << "Unable to open " << sResumeFile.str() << " for writing" << std::endl;
-						return 1;
-					}
-					fwrite(&stWork, sizeof(unsigned int), 6, fileResume); // Write the 6 unsigned ints
-					fwrite(&stWork.nChainStart, 1, 8, fileResume); // Write nChainStart uint64
-					fwrite(stWork.sCharset.c_str(), stWork.sCharset.length(), 1, fileResume);
-					fputc(0x00, fileResume);
-					fwrite(stWork.sHashRoutine.c_str(), stWork.sHashRoutine.length(), 1, fileResume);
-					fclose(fileResume);
-					
-				}
-				std::stringstream szFileName;
-				szFileName << sHomedir << "/.distrrtgen/" << stWork.nPartID << ".part"; // Store it in the users home directory
-
-				// do the work
-				int nReturn;
-				if(nTalkative <= TK_ALL)
-					std::cout << "Starting multithreaded rainbowtable generator..." << std::endl;
-
-				if(nTalkative >= TK_WARNINGS)
-					std::freopen("/dev/null", "w", stdout);	
-
-
-				if((nReturn = pGenerator->CalculateTable(szFileName.str(), stWork.nChainCount, stWork.sHashRoutine, stWork.sCharset, stWork.nMinLetters, stWork.nMaxLetters, stWork.nOffset, stWork.nChainLength, stWork.nChainStart, stWork.sSalt)) != 0)
-				{
-					if(nTalkative >= TK_WARNINGS)
-						std::freopen("/dev/stdout", "w", stdout);	
-					std::cout << "Error id " << nReturn << " received while generating table";
-					return nReturn;
-				}
-
-				if(nTalkative >= TK_WARNINGS)
-					std::freopen("/dev/stdout", "w", stdout);	
-
-				if(nTalkative <= TK_ALL)
-					std::cout << "Calculations of part " << stWork.nPartID << " completed. Sending data..." << std::endl;
-				while(1)
-				{
-					try
-					{
-						int nResult = Con->SendFinishedWork(stWork.nPartID, szFileName.str());
-						switch(nResult)			
-						{
-						case TRANSFER_OK:
-							if(nTalkative <= TK_ALL)
-								std::cout << "Data delivered!" << std::endl;
-							remove(szFileName.str().c_str());		
-							stWork.sCharset = ""; // Blank out the charset to indicate the work is complete
-							unlink(sResumeFile.str().c_str());
-							break;
-						case TRANSFER_NOTREGISTERED:
-							if(nTalkative <= TK_ALL)
-								std::cout << "Data was not accepted by the server. Dismissing" << std::endl;
-							remove(szFileName.str().c_str());
-							stWork.sCharset = ""; // Blank out the charset to indicate the work is complete
-							unlink(sResumeFile.str().c_str());							
-							break;
-						case TRANSFER_GENERAL_ERROR:
-							if(nTalkative <= TK_ALL)
-								std::cout << "Could not transfer data to server. Retrying in " << CLIENT_WAIT_TIME_SECONDS / 60 << " minutes" << std::endl;
-							Sleep(CLIENT_WAIT_TIME_SECONDS * 1000);
-							continue;
-						}
-						break;
-					}
-					catch(SocketException *ex)
-					{
-						std::cout << "Error connecting to server: " << ex->GetErrorMessage() << ". Retrying in " << CLIENT_WAIT_TIME_SECONDS / 60 << " minutes" << std::endl;
-						delete ex;
-						Sleep(CLIENT_WAIT_TIME_SECONDS * 1000);
-					}
-					catch(ConnectionException *ex)
-					{
-						if(ex->GetErrorLevel() >= nTalkative)
-							std::cout << ex->GetErrorMessage() << ". Retrying in " << CLIENT_WAIT_TIME_SECONDS / 60 << " minutes" << std::endl;
-						delete ex;
-						Sleep(CLIENT_WAIT_TIME_SECONDS * 1000);
-					}
-				}
+				std::cout << "OK" << std::endl;
+				std::cout << "Requesting work...";
 			}
-			catch(SocketException *ex)
+			int errorCode = Con->RequestWork(&stWork);
+
+			if(errorCode > 1)
 			{
-				if(nTalkative <= TK_WARNINGS)
-					std::cout << "Could not connect to server: " << ex->GetErrorMessage() << ". Retrying in " << CLIENT_WAIT_TIME_SECONDS / 60 << " minutes" << std::endl;
-				delete ex;
+				if(errorCode == 1)
+				{
+					std::cout << "Failed to request work. Invalid username/password combination" << std::endl;
+				}
+				else
+				{
+					std::cout << "Failed to request work. Unknown error code recieved" << errorCode << " recieved" << std::endl;
+				}
+				return 1;						
+			}					
+			if(nTalkative <= TK_ALL)
+				std::cout << "work received !" << std::endl;
+			FILE *fileResume = fopen(sResumeFile.str().c_str(), "wb");
+			if(fileResume == NULL)
+			{
+				std::cout << "Unable to open " << sResumeFile.str() << " for writing" << std::endl;
+				return 1;
+			}
+			fwrite(&stWork, sizeof(unsigned int), 6, fileResume); // Write the 6 unsigned ints
+			fwrite(&stWork.nChainStart, 1, 8, fileResume); // Write nChainStart uint64
+			fwrite(stWork.sCharset.c_str(), stWork.sCharset.length(), 1, fileResume);
+			fputc(0x00, fileResume);
+			fwrite(stWork.sHashRoutine.c_str(), stWork.sHashRoutine.length(), 1, fileResume);
+			fclose(fileResume);
+			
+		}
+		std::stringstream szFileName;
+		szFileName << stWork.nPartID << ".part"; // Store it in the users home directory
+
+		// do the work
+		int nReturn;
+		if(nTalkative <= TK_ALL)
+			std::cout << "Starting multithreaded rainbowtable generator..." << std::endl;
+
+		if(nTalkative >= TK_WARNINGS)
+			std::freopen("/dev/null", "w", stdout);	
+
+
+		if((nReturn = pGenerator->CalculateTable(szFileName.str(), stWork.nChainCount, stWork.sHashRoutine, stWork.sCharset, stWork.nMinLetters, stWork.nMaxLetters, stWork.nOffset, stWork.nChainLength, stWork.nChainStart, stWork.sSalt)) != 0)
+		{
+			if(nTalkative >= TK_WARNINGS)
+				std::freopen("/dev/stdout", "w", stdout);	
+			std::cout << "Error id " << nReturn << " received while generating table";
+			return nReturn;
+		}
+
+		if(nTalkative >= TK_WARNINGS)
+			std::freopen("/dev/stdout", "w", stdout);	
+
+		if(nTalkative <= TK_ALL)
+			std::cout << "Calculations of part " << stWork.nPartID << " completed. Sending data..." << std::endl;
+		return -1;
+		nResult = -1;
+		while(nResult != 0 && nResult != 1)
+		{
+			int nResult = Con->SendFinishedWork(stWork.nPartID, szFileName.str());
+			if(nResult == 0)
+			{
+				if(nTalkative <= TK_ALL)
+					std::cout << "Data delivered!" << std::endl;
+				remove(szFileName.str().c_str());		
+				stWork.sCharset = ""; // Blank out the charset to indicate the work is complete
+				unlink(sResumeFile.str().c_str());
+			}
+			else if(nResult == 1)
+			{
+				if(nTalkative <= TK_ALL)
+					std::cout << "Data was not accepted by the server. Dismissing" << std::endl;
+				remove(szFileName.str().c_str());
+				stWork.sCharset = ""; // Blank out the charset to indicate the work is complete
+				unlink(sResumeFile.str().c_str());
+			}
+			else
+			{
+				if(nTalkative <= TK_ALL)
+					std::cout << "Could not transfer data to server. Retrying in " << CLIENT_WAIT_TIME_SECONDS / 60 << " minutes" << std::endl;
 				Sleep(CLIENT_WAIT_TIME_SECONDS * 1000);
 			}
-			catch(ConnectionException *ex)
-			{
-				if(ex->GetErrorLevel() >= nTalkative)
-					std::cout << ex->GetErrorMessage() << ". Retrying in " << CLIENT_WAIT_TIME_SECONDS / 60 << " minutes" << std::endl;
-				delete ex;
-				Sleep(CLIENT_WAIT_TIME_SECONDS * 1000);
-			}
-		}	
+			break;
+		}
 	}
-	catch (...)
-	{
-		if(nTalkative <= TK_ERRORS)
-			std::cerr << "Unhandled exception :(" << std::endl;
-	}
-  return 0;
+	return 0;
 }

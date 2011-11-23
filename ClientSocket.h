@@ -4,6 +4,7 @@
 #include <sstream>
 
 #include "BaseSocket.h"
+#include "Public.h"
 
 class CClientSocket :
 	public CBaseSocket
@@ -15,6 +16,9 @@ public:
 	void Progress(int, char*, float);
 	std::string GetWork(void);
 	void Close(void);
+	int SendFinishedWork(unsigned int&, std::basic_stringstream<char>::__string_type);
+	int RequestWork(stWorkInfo*);
+
 };
 
 #endif

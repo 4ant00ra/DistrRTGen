@@ -8,7 +8,7 @@
 #****************************************************************************
 
 # DEBUG can be set to YES to include debugging info, or NO otherwise
-DEBUG          := YES
+DEBUG          := NO
 
 # PROFILE can be set to YES to include profiling info, or NO otherwise
 PROFILE        := NO
@@ -85,7 +85,7 @@ CXXFLAGS := ${CXXFLAGS} ${DEFS}
 # Targets of the build
 #****************************************************************************
 
-OUTPUT := distrrtgen3 
+OUTPUT := rtcrack
 
 all: ${OUTPUT}
 
@@ -94,7 +94,7 @@ all: ${OUTPUT}
 # Source files
 #****************************************************************************
 
-SRCS := Public.cpp ChainWalkContext.cpp HashAlgorithm.cpp HashRoutine.cpp rtgen_client.cpp BaseSocket.cpp ClientSocket.cpp Exception.cpp SocketException.cpp ServerConnector.cpp Thread.cpp DataGenerationThread.cpp RainbowTableGenerator.cpp MD5new.cpp
+SRCS := Public.cpp ChainWalkContext.cpp HashAlgorithm.cpp HashRoutine.cpp rtgen_client.cpp BaseSocket.cpp ClientSocket.cpp Thread.cpp DataGenerationThread.cpp RainbowTableGenerator.cpp MD5new.cpp
 
 # Add on the sources for libraries
 SRCS := ${SRCS}

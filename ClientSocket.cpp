@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include "ClientSocket.h"
-
+#include "Public.h"
 
 CClientSocket::CClientSocket(int nSocketType, int nProtocol, std::string szHost, int nPort) : CBaseSocket(nSocketType, nProtocol)
 {
@@ -28,15 +28,28 @@ CClientSocket::CClientSocket(int nSocketType, int nProtocol, std::string szHost,
 
 }
 
-std::string CClientSocket::GetWork(void)
+int CClientSocket::RequestWork(stWorkInfo* Work)
 {
-	std::string part;
+	int part;
+	std::string line;
+	stringstream ss;
 	*this << "work\n";
-	*this >> part;
+	*this >> line;
 
-	part = part.substr(0,part.find('\n'));
+	part = ston(line.substr(0,line.find('\n')));
 	
-	return part;
+	Work->nPartID = 1;
+	Work->nMinLetters = 1;
+	Work->nMaxLetters = 5;
+	Work->nOffset = 0;
+	Work->nChainLength = 600;
+	Work->nChainCount = 200000;
+	
+	Work->nChainStart = 0;
+	Work->sHashRoutine = "md5";
+	Work->sCharset = "numeric";
+	Work->sSalt = "";
+	return 0;
 }
 
 void CClientSocket::Progress(void)
@@ -54,4 +67,9 @@ void CClientSocket::Progress(int nPart, char* czHostname, float fProg)
 void CClientSocket::Close(void)
 {
 	*this << "quit\n";
+}
+
+int CClientSocket::SendFinishedWork(unsigned int& n, std::basic_stringstream<char>::__string_type x)
+{
+	return -1;
 }

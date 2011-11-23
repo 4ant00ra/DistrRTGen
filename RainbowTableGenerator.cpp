@@ -5,7 +5,6 @@
 #include <zlib.h>
 
 #include "ChainWalkContext.h"
-#include "Exception.h"
 #include "RainbowTableGenerator.h"
 
 
@@ -54,7 +53,8 @@ CRainbowTableGenerator::CRainbowTableGenerator(int nNumProcessors)
 		FILE* fileCPU = fopen("/proc/cpuinfo", "r");
 		if(fileCPU == NULL)
 		{
-			throw new Exception("Unable to autodetect the processor count. Please edit distrrtgen.conf and manually set the amount of processors");
+			std::cout << "Unable to autodetect the processor count. Please edit distrrtgen.conf and manually set the amount of processors\n";
+			exit(-1);
 		}
 		m_nProcessorCount = 0;
 		while(!feof(fileCPU))
@@ -243,13 +243,13 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 	QuickSort(chains, 0, nRainbowChainCount - 1);
 	std::cout << "ok!" << std::endl << "Compressing content before sending";
 
-	uLongf len = nRainbowChainCount*1.1+12;
+	/*uLongf len = nRainbowChainCount*1.1+12;
 	unsigned char *buffer = new unsigned char[len];
 	compress((Bytef *)buffer, &len, (Bytef *)chains, nRainbowChainCount * 16);
 	FILE *zipFile = fopen(sFilename.append(".zip").c_str(), "wb");
 	fwrite(buffer, 1, len, zipFile);
 	fclose(zipFile);
 	std::cout << "ok!" << std::endl;
-	// Done sorting
+	// Done sorting*/
 	return 0;
 }
