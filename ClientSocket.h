@@ -11,6 +11,7 @@ class CClientSocket :
 public:
 	CClientSocket(void);
 	CClientSocket(int nSocketType, int nProtocol, std::string szHost, int nPort);
+	std::string test(void);
 public:
 };
 

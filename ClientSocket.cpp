@@ -1,3 +1,5 @@
+#include <iostream>
+#include <sstream>
 #include "ClientSocket.h"
 
 
@@ -9,8 +11,7 @@ CClientSocket::CClientSocket(int nSocketType, int nProtocol, std::string szHost,
 	if ((he = gethostbyname(szHost.c_str())) == 0)
 	{
 		std::ostringstream szError;
-		szError << "Error while trying to resolve hostname '" << szHost << "' : " << GetSocketError();
-		throw new SocketException(GetSocketErrorCode(), szError.str());
+		std::cout << "Error while trying to resolve hostname '" << szHost << "' : " << GetSocketError();
 	}
 
 	sockaddr_in addr;
@@ -22,8 +23,17 @@ CClientSocket::CClientSocket(int nSocketType, int nProtocol, std::string szHost,
 	if (connect(rSocket, (sockaddr *) &addr, sizeof(sockaddr)) == SOCKET_ERROR)
 	{
 		std::ostringstream szError;
-		szError << "Error while trying to connect to '" << szHost << "' : " << GetSocketError();
-		throw new SocketException(GetSocketErrorCode(), szError.str());
+		std::cout << "Error while trying to connect to '" << szHost << "' : " << GetSocketError();
 	}
 
+}
+
+std::string CClientSocket::test(void)
+{
+	std::string res;
+	std::string a = "work?\n";
+	*this << a;
+	*this >> res;
+	*this << "quit\n";
+	return res;
 }

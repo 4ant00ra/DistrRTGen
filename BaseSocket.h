@@ -11,8 +11,6 @@
 #include <sys/un.h>
 #include <vector>
 
-#include "SocketException.h"
-
 #ifndef INVALID_SOCKET
 	#define INVALID_SOCKET -1
 #endif
