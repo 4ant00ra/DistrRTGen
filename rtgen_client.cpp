@@ -32,11 +32,7 @@ enum TALKATIVE
 
 int main(int argc, char* argv[])
 {	
-
-	std::string sUsername;
-	std::string sPassword;
 	double nFrequency;
-	std::string sHostname;
 	std::string sHomedir;
 	int nNumProcessors = 0;
 	int nClientID;
@@ -79,57 +75,11 @@ int main(int argc, char* argv[])
 		fClientInfo >> nClientID;
 		fClientInfo.close();
 	}
-	// Then load the client configuration
-	std::ostringstream sConf;
-	sConf << sHomedir << "/.distrrtgen/";
-	sConf << "distrrtgen.conf";
-	std::fstream fConfig(sConf.str().c_str(), std::ifstream::in);
-	if(fConfig.is_open() == false)
-	{
-		std::cout << sConf.str() << " could not be opened - " << strerror(errno) << std::endl;
-		return 1;
-	}
-	if( !(fConfig >> sUsername) )
-	{
-		std::cout << "Missing username line, check version of " << sConf.str() << std::endl;
-		return 1;
-	}
-	if( !(fConfig >> sPassword) )
-	{
-		std::cout << "Missing password line, check version of " << sConf.str() << std::endl;
-		return 1;
-	}
-	if( !(fConfig >> sHostname) )
-	{
-		std::cout << "Missing hostname line, check version of " << sConf.str() << std::endl;
-		return 1;
-	}
-	fConfig.close();
-	sUsername = sUsername.substr(9);
-	sPassword = sPassword.substr(9);
-	sHostname = sHostname.substr(9);
-	if(sUsername == "")
-	{
-		std::cout << "No username configured in " << sConf.str() << std::endl;
-		return 1;
-	}
-	if(sPassword == "")
-	{
-		std::cout << "No password configured in " << sConf.str() << std::endl;
-		return 1;
-	}
-	if(sHostname == "")
-	{
-		std::cout << "No Hostname configured in " << sConf.str() << std::endl;
-		return 1;
-	}
 	
-	wu_mgr *WUFile = new wu_mgr();
 	// If numprocessors is 0, RainbowTableGenerator.cpp will try to detect it itself
 	
 	// Try to catch cpu Frequency from /proc/cpuinfo
 	const char* cpuprefix = "cpu MHz";
-	const char* cpunumber = "processor";
 	FILE* F;
 	char cpuline[300+1];
 	char* pos;
@@ -174,7 +124,6 @@ int main(int argc, char* argv[])
 	}
 	
 	ServerConnector *Con = new ServerConnector();
-	Con->Login(sUsername, sPassword, sHostname, nClientID, nFrequency);
 	stWorkInfo stWork;
 	
 	// Check to see if there is something to resume from
@@ -250,7 +199,7 @@ int main(int argc, char* argv[])
 				{
 					try
 					{
-						int nResult = Con->SendFinishedWork(stWork.nPartID, szFileName.str(), sUsername, sPassword);
+						int nResult = Con->SendFinishedWork(stWork.nPartID, szFileName.str());
 						switch(nResult)			
 						{
 						case TRANSFER_OK:
@@ -314,28 +263,6 @@ int main(int argc, char* argv[])
 			{
 				if(nClientID == 0) // This client doesn't have an ID. 
 				{   // We connect to the server and register ourself
-					if(nTalkative <= TK_ALL)
-						std::cout << "Connecting to server to perform first time registration...";
-					if(nTalkative <= TK_ALL)
-					{
-						std::cout << "OK" << std::endl;
-						std::cout << "Performing logon...";
-					}
-					int errorCode = Con->RegisterNewClient(nClientID);
-					if(errorCode > 1)
-					{
-						if(errorCode == 1)
-						{
-							std::cout << "Failed to register new client. Invalid username/password combination" << std::endl;
-						}
-						else
-						{
-							std::cout << "Failed to register new client. Unknown error code " << errorCode << " recieved" << std::endl;
-						}
-						return 1;
-					}
-					if(nTalkative <= TK_ALL)
-						std::cout << "client num : " << nClientID << std::endl;
 					std::fstream fClient(sClientInfo.str().c_str(), std::fstream::out);
 					if(fClient.is_open() == false)
 					{
@@ -416,7 +343,7 @@ int main(int argc, char* argv[])
 				{
 					try
 					{
-						int nResult = Con->SendFinishedWork(stWork.nPartID, szFileName.str(), sUsername, sPassword);
+						int nResult = Con->SendFinishedWork(stWork.nPartID, szFileName.str());
 						switch(nResult)			
 						{
 						case TRANSFER_OK:

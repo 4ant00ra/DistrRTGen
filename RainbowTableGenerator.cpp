@@ -2,11 +2,11 @@
 #include <sstream>
 #include <sys/resource.h>
 #include <time.h>
+#include <zlib.h>
 
 #include "ChainWalkContext.h"
 #include "Exception.h"
 #include "RainbowTableGenerator.h"
-#include "zlib.h"
 
 
 int QuickSortPartition(RainbowChain* pChain, int nLow, int nHigh)
@@ -101,7 +101,6 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 
 	if(sHashRoutineName == "mscache")
 	{
-		int salt_length = 0;
 		unsigned char UnicodePlain[MAX_PLAIN_LEN * 2];
 		int i;
 		for (i = 0; i < sSalt.length(); i++)
@@ -170,7 +169,6 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 	time_t tStart = time(NULL);
 	time_t tEnd;
 	int nOldCalculatedchains = GetCurrentCalculatedChains();
-	int nTotalChainSpeed = 0;
 	//renice main thread to +19.
 	setpriority(PRIO_PROCESS, 0, 19);
 	while(nCalculatedChains < nRainbowChainCount)
@@ -245,7 +243,7 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 	QuickSort(chains, 0, nRainbowChainCount - 1);
 	std::cout << "ok!" << std::endl << "Compressing content before sending";
 
-	uLongf  len = nRainbowChainCount*1.1+12;
+	uLongf len = nRainbowChainCount*1.1+12;
 	unsigned char *buffer = new unsigned char[len];
 	compress((Bytef *)buffer, &len, (Bytef *)chains, nRainbowChainCount * 16);
 	FILE *zipFile = fopen(sFilename.append(".zip").c_str(), "wb");

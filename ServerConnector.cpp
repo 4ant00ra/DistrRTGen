@@ -1,6 +1,5 @@
 #include <curl/curl.h>
 #include <curl/easy.h>
-#include <curl/types.h>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -81,40 +80,7 @@ void ServerConnector::Disconnect()
 	delete s;
 	s = NULL;
 }
-int ServerConnector::Login(std::string sUsername, std::string sPassword, std::string sHostname, int nClientID, double nFrequency) 
-{
-		credentials.Username = (char *)sUsername.c_str();
-		credentials.Password = (char *)sPassword.c_str();
-		
-		cpu.Architecture = "x86";
-		cpu.CurrentSpeed = (int)nFrequency;
-		cpu.MaxSpeed = (int)nFrequency;
-		cpu.NumCores = 1;
-			
-		cpulist.CPUElement.push_back(&cpu);
 
-		m_machineInfo.Credentials = &credentials;
-		m_machineInfo.CPU = &cpulist;
-		m_machineInfo.Version = "4.0LX";
-		m_machineInfo.Hostname = (char *)sHostname.c_str();
-		m_machineInfo.SupportHybrid = 0;
-		m_machineInfo.ClientID = nClientID;
-
-		if(m_machineInfo.ClientID == 0)
-		{
-			ns1__RegisterNewClientResponse response;
-			soap_call_ns1__RegisterNewClient(&m_soap, NULL, NULL, &m_machineInfo, response);
-		}
-	return false;
-}
-int ServerConnector::RegisterNewClient(int &nClientID)
-{
-	ns1__RegisterNewClientResponse response;
-	soap_call_ns1__RegisterNewClient(&m_soap, NULL, NULL, &m_machineInfo, response);
-	if(response.ErrorCode == 0)
-		nClientID = response.ClientID;	
-	return response.ErrorCode;
-}
 int ServerConnector::RequestWork(stWorkInfo *stWork)
 {
 		ns1__RequestWorkResponse response;
@@ -142,7 +108,7 @@ int ServerConnector::RequestWork(stWorkInfo *stWork)
 		return response.ErrorCode;
 }
 
-int ServerConnector::SendFinishedWork(int nPartID, std::string Filename, std::string sUsername, std::string sPassword)
+int ServerConnector::SendFinishedWork(int nPartID, std::string Filename)
 {
 	try
 	{
@@ -168,7 +134,7 @@ int ServerConnector::SendFinishedWork(int nPartID, std::string Filename, std::st
 		sPartname = szPartname.str();
 		
 		//build url upload.php?username=blablabla
-		szUrlpost << UPLOAD_URL << "?username=" << sUsername << "&password=" << sPassword << "&compressed2=1";
+		szUrlpost << UPLOAD_URL << "?compressed2=1";
 		sUrlpost = szUrlpost.str();
 		
 		curl = curl_easy_init();

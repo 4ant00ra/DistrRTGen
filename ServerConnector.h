@@ -62,8 +62,8 @@ public:
 public:
 	int RegisterNewClient(int &nClientID);
 	void Disconnect();
-	int Login(std::string Username, std::string Password, std::string sHostname, int nUserID, double nFrequency);
-	int SendFinishedWork(int PartID, std::string Filename, std::string sUsername, std::string sPassword);
+	int Login(double nFrequency);
+	int SendFinishedWork(int PartID, std::string Filename);
 	int RequestWork(stWorkInfo *stWork);
 };
 
