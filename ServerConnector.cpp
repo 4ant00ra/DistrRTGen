@@ -70,15 +70,10 @@ ServerConnector::~ServerConnector(void)
 {
 	if(s != NULL)
 	{
-		Disconnect();
+		delete s;
+		s = NULL;
 		delete s; 
 	}
-}
-
-void ServerConnector::Disconnect()
-{
-	delete s;
-	s = NULL;
 }
 
 int ServerConnector::RequestWork(stWorkInfo *stWork)
