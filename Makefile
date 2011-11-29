@@ -26,9 +26,6 @@ AR     := ar rc
 RANLIB := ranlib
 
 PREFIX?  := /usr/local/bin
-TMPLCONF := distrrtgen.conf
-CONFDIR  := ~/.distrrtgen
-CONFFILE := $(CONFDIR)/distrrtgen.conf
 
 DEBUG_CFLAGS     :=  -D_FAST_HASH_ -D_FILE_OFFSET_BITS=64 -Wall -Wno-format -g -DDEBUG
 RELEASE_CFLAGS   :=  -D_FAST_MD5_ -D_FAST_HASH_ -D_FILE_OFFSET_BITS=64 -Wno-unknown-pragmas -Wno-format -march=native -O2
@@ -55,16 +52,6 @@ ifeq (YES, ${PROFILE})
    CFLAGS   := ${CFLAGS} -pg -O3
    CXXFLAGS := ${CXXFLAGS} -pg -O3
    LDFLAGS  := ${LDFLAGS} -pg
-endif
-
-#****************************************************************************
-# Preprocessor directives
-#****************************************************************************
-
-ifeq (YES, ${TINYXML_USE_STL})
-  DEFS := -DTIXML_USE_STL
-else
-  DEFS :=
 endif
 
 #****************************************************************************
@@ -118,9 +105,6 @@ ${OUTPUT}: ${OBJS}
 
 %.o : %.c
 	${CC} -c ${CFLAGS} ${INCS} $< -o $@
-
-dist:
-	bash makedistlinux
 
 install: dist configure
 		mkdir -p $(PREFIX)

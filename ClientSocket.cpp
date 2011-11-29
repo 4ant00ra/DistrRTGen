@@ -40,10 +40,10 @@ int CClientSocket::RequestWork(stWorkInfo* Work)
 	
 	Work->nPartID = 1;
 	Work->nMinLetters = 1;
-	Work->nMaxLetters = 5;
+	Work->nMaxLetters = 6;
 	Work->nOffset = 0;
-	Work->nChainLength = 600;
-	Work->nChainCount = 200000;
+	Work->nChainLength = 500;
+	Work->nChainCount = 2000000;
 	
 	Work->nChainStart = 0;
 	Work->sHashRoutine = "md5";
