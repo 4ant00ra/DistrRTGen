@@ -13,10 +13,6 @@ DEBUG          := NO
 # PROFILE can be set to YES to include profiling info, or NO otherwise
 PROFILE        := NO
 
-# TINYXML_USE_STL can be used to turn on STL support. NO, then STL
-# will not be used. YES will include the STL files.
-TINYXML_USE_STL := YES 
-
 #****************************************************************************
 
 CC     := gcc
@@ -28,9 +24,9 @@ RANLIB := ranlib
 PREFIX?  := /usr/local/bin
 
 DEBUG_CFLAGS     :=  -D_FAST_HASH_ -D_FILE_OFFSET_BITS=64 -Wall -Wno-format -g -DDEBUG
-RELEASE_CFLAGS   :=  -D_FAST_MD5_ -D_FAST_HASH_ -D_FILE_OFFSET_BITS=64 -Wno-unknown-pragmas -Wno-format -march=native -O2
+RELEASE_CFLAGS   :=  -D_FAST_HASH_ -D_FILE_OFFSET_BITS=64 -Wno-unknown-pragmas -Wno-format -march=native -O2
 
-LIBS		 := -lz -lcrypto -lpthread -lcurl
+LIBS		 := -lz -lcrypto -lpthread
 
 DEBUG_CXXFLAGS   := ${DEBUG_CFLAGS} 
 RELEASE_CXXFLAGS := ${RELEASE_CFLAGS}
@@ -81,7 +77,7 @@ all: ${OUTPUT}
 # Source files
 #****************************************************************************
 
-SRCS := Public.cpp ChainWalkContext.cpp HashAlgorithm.cpp HashRoutine.cpp rtgen_client.cpp BaseSocket.cpp ClientSocket.cpp Thread.cpp DataGenerationThread.cpp RainbowTableGenerator.cpp MD5new.cpp
+SRCS := Public.cpp ChainWalkContext.cpp HashAlgorithm.cpp HashRoutine.cpp rtgen_client.cpp BaseSocket.cpp ClientSocket.cpp Thread.cpp DataGenerationThread.cpp RainbowTableGenerator.cpp
 
 # Add on the sources for libraries
 SRCS := ${SRCS}

@@ -12,7 +12,6 @@
 #include <openssl/sha.h>
 
 #include "HashAlgorithm.h"
-#include "MD5new.h" //added by alesc <alexis.dagues@gmail.com>
 #include "Public.h"
 
 
