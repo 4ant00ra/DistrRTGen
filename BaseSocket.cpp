@@ -39,6 +39,7 @@ std::string CBaseSocket::GetPeerName()
 	ip.assign(inet_ntoa(name.sin_addr));
 	return ip;
 }
+
 void CBaseSocket::operator <<(std::string Line)
 {
 	if(send(rSocket, Line.c_str(), (int)Line.length(), 0) == SOCKET_ERROR)
@@ -63,6 +64,7 @@ void CBaseSocket::operator <<(std::vector<unsigned char> Data)
 	}	
 	delete szData;
 }
+
 void CBaseSocket::operator >>(std::string &Line)
 {
 	char buf[8096];
@@ -74,8 +76,8 @@ void CBaseSocket::operator >>(std::string &Line)
 		std::cout << "Error while recieving data from client: " << GetSocketError();
 	}
 	Line.assign(buf, nBytes);
-
 }
+
 void CBaseSocket::operator >>(std::vector<unsigned char> &Data)
 {
     u_long arg = 0;
@@ -98,6 +100,7 @@ void CBaseSocket::operator >>(std::vector<unsigned char> &Data)
         Data.push_back(buf[i]); 	
 	}
 }
+
 std::string CBaseSocket::ReceiveBytes(void *argPtr, void (*callback)(void *arg, size_t TotalByteCount), int amountBytes)
 {
 	std::string ret;

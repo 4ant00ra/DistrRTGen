@@ -28,12 +28,30 @@ CClientSocket::CClientSocket(int nSocketType, int nProtocol, std::string szHost,
 
 }
 
-std::string CClientSocket::test(void)
+std::string CClientSocket::GetWork(void)
 {
-	std::string res;
-	std::string a = "work?\n";
-	*this << a;
-	*this >> res;
+	std::string part;
+	*this << "work\n";
+	*this >> part;
+
+	part = part.substr(0,part.find('\n'));
+	
+	return part;
+}
+
+void CClientSocket::Progress(void)
+{
+	*this << "progress\n";
+}
+
+void CClientSocket::Progress(int nPart, char* czHostname, float fProg)
+{
+	std::stringstream ssData;
+	ssData << nPart << ":" << czHostname << ":" << fProg << "\n";
+	*this << ssData.str();
+}
+
+void CClientSocket::Close(void)
+{
 	*this << "quit\n";
-	return res;
 }

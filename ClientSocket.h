@@ -10,9 +10,11 @@ class CClientSocket :
 {
 public:
 	CClientSocket(void);
-	CClientSocket(int nSocketType, int nProtocol, std::string szHost, int nPort);
-	std::string test(void);
-public:
+	CClientSocket(int, int, std::string, int);
+	void Progress(void);
+	void Progress(int, char*, float);
+	std::string GetWork(void);
+	void Close(void);
 };
 
 #endif

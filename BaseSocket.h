@@ -1,10 +1,10 @@
 #ifndef _BASESOCKET_H__
 #define _BASESOCKET_H__
 
-#include <arpa/inet.h>      /* inet_ntoa() to format IP address */
+#include <arpa/inet.h>
 #include <errno.h>
 #include <netdb.h>
-#include <netinet/in.h>     /* in_addr structure */
+#include <netinet/in.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/types.h>
