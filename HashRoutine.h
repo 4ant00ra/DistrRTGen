@@ -2,7 +2,7 @@
    RainbowCrack - a general propose implementation of Philippe Oechslin's faster time-memory trade-off technique.
 
    Copyright (C) Zhu Shuanglei <shuanglei@hotmail.com>
-*/
+   */
 
 #ifndef _HASHROUTINE_H
 #define _HASHROUTINE_H
@@ -15,17 +15,17 @@ typedef void (*HASHROUTINE)(unsigned char* pPlain, int nPlainLen, unsigned char*
 
 class CHashRoutine
 {
-public:
+	public:
 	CHashRoutine();
 	virtual ~CHashRoutine();
 
-private:
+	private:
 	vector<string>		vHashRoutineName;
 	vector<HASHROUTINE>	vHashRoutine;
 	vector<int>			vHashLen;
 	void AddHashRoutine(string sHashRoutineName, HASHROUTINE pHashRoutine, int nHashLen);
 
-public:
+	public:
 	string GetAllHashRoutineName();
 	void GetHashRoutine(string sHashRoutineName, HASHROUTINE& pHashRoutine, int& nHashLen);
 };

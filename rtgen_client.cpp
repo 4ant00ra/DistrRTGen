@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 	std::string sHomedir;
 	int nNumProcessors = 0;
 	int nTalkative = TK_ALL;
-	
+
 	if(argc > 1)
 	{
 		if(strcmp(argv[1], "-q") == 0)
@@ -68,18 +68,18 @@ int main(int argc, char* argv[])
 	char cpuline[300+1];
 	char* pos;
 	int ok = 0;
-	
+
 	nNumProcessors = 0;
 
 	signal(SIGINT, &End);
-	
+
 	// open cpuinfo system file
 	F = fopen(CPU_INFO_FILENAME,"r");
 	if (!F) return 0;
-	
+
 	//read lines
 	while (!feof(F))
-  	{
+	{
 		fgets (cpuline, sizeof(cpuline), F);
 		// test if it's the frequency line
 		if (!strncmp(cpuline, cpuprefix, strlen(cpuprefix)))
@@ -93,17 +93,17 @@ int main(int argc, char* argv[])
 			nFrequency = atof (cpuline)/1000000;
 			ok = 1;
 		}
-  	}
+	}
 	nNumProcessors = sysconf(_SC_NPROCESSORS_ONLN);
-	
+
 	if (ok != 1)
 	{
 		cout << "Unable to get cpu frequency from /proc/cpuinfo." << endl;
 		exit(-1);
 	}
-	
+
 	stWorkInfo stWork;
-	
+
 	// Check to see if there is something to resume from
 	std::ostringstream sResumeFile;
 	sResumeFile << ".resume";
@@ -204,7 +204,7 @@ int main(int argc, char* argv[])
 			fputc(0x00, fileResume);
 			fwrite(stWork.sHashRoutine.c_str(), stWork.sHashRoutine.length(), 1, fileResume);
 			fclose(fileResume);
-			
+
 		}
 		std::stringstream szFileName;
 		szFileName << stWork.nPartID << ".part"; // Store it in the users home directory

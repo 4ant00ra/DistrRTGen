@@ -2,7 +2,7 @@
    RainbowCrack - a general propose implementation of Philippe Oechslin's faster time-memory trade-off technique.
 
    Copyright (C) Zhu Shuanglei <shuanglei@hotmail.com>
-*/
+   */
 #include <ctype.h>
 #include <openssl/rand.h>
 
@@ -74,8 +74,8 @@ bool CChainWalkContext::LoadCharset(string sName)
 				for (j = 0; j < sCharsetName.size(); j++)
 				{
 					if (   !isalpha(sCharsetName[j])
-						&& !isdigit(sCharsetName[j])
-						&& (sCharsetName[j] != '-'))
+							&& !isdigit(sCharsetName[j])
+							&& (sCharsetName[j] != '-'))
 					{
 						fCharsetNameCheckPass = false;
 						break;
@@ -186,9 +186,9 @@ bool CChainWalkContext::SetRainbowTableIndex(int nRainbowTableIndex)
 bool CChainWalkContext::SetSalt(unsigned char *Salt, int nSaltLength)
 {
 	memcpy(&m_Salt[0], Salt, nSaltLength);
-	
+
 	m_nSaltLen = nSaltLength;
-//	m_sSalt = sSalt;
+	//	m_sSalt = sSalt;
 	return true;
 }
 bool CChainWalkContext::SetupWithPathName(string sPathName, int& nRainbowChainLen, int& nRainbowChainCount)
@@ -345,8 +345,8 @@ void CChainWalkContext::IndexToPlain()
 	// Slow version
 	for (i = m_nPlainLen - 1; i >= 0; i--)
 	{
-		m_Plain[i] = m_PlainCharset[nIndexOfX % m_nPlainCharsetLen];
-		nIndexOfX /= m_nPlainCharsetLen;
+	m_Plain[i] = m_PlainCharset[nIndexOfX % m_nPlainCharsetLen];
+	nIndexOfX /= m_nPlainCharsetLen;
 	}
 	*/
 
@@ -376,21 +376,21 @@ void CChainWalkContext::IndexToPlain()
 		__asm
 		{
 			mov eax, nIndexOfX32
-			xor edx, edx
-			div nPlainCharsetLen
-			mov nIndexOfX32, eax
-			mov nTemp, edx
+				xor edx, edx
+				div nPlainCharsetLen
+				mov nIndexOfX32, eax
+				mov nTemp, edx
 		}
 #else
 		__asm__ __volatile__ (	"mov %2, %%eax;"
-								"xor %%edx, %%edx;"
-								"divl %3;"
-								"mov %%eax, %0;"
-								"mov %%edx, %1;"
-								: "=m"(nIndexOfX32), "=m"(nTemp)
-								: "m"(nIndexOfX32), "m"(nPlainCharsetLen)
-								: "%eax", "%edx"
-							 );
+				"xor %%edx, %%edx;"
+				"divl %3;"
+				"mov %%eax, %0;"
+				"mov %%edx, %1;"
+				: "=m"(nIndexOfX32), "=m"(nTemp)
+				: "m"(nIndexOfX32), "m"(nPlainCharsetLen)
+				: "%eax", "%edx"
+				);
 #endif
 		m_Plain[i] = m_PlainCharset[nTemp];
 	}
@@ -427,7 +427,7 @@ string CChainWalkContext::GetPlain()
 		else
 			sRet += '?';
 	}
-	
+
 	return sRet;
 }
 

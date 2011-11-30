@@ -120,25 +120,25 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 	// FileName
 	std::ofstream Partfile;
 	Partfile.open(sFilename.c_str(), std::ios::out | std::ios::binary | std::ios::app);
-	
+
 	// Open file
-	
+
 	if (Partfile.is_open() == false)
 	{
 		std::cout << "failed to create " << sFilename << std::endl;
 		return 4;
 	}
-	
-	
+
+
 	// Check existing chains
-	
+
 	long begin,end;
-	
+
 	begin = Partfile.tellp();
 	Partfile.seekp(0, std::ios::end);
 	end = Partfile.tellp();
 	unsigned int nDataLen = end - begin;
-	
+
 	nDataLen = nDataLen / 16 * 16;
 	if ((int)nDataLen == nRainbowChainCount * 16)
 	{
@@ -150,9 +150,9 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 	{
 		std::cout << "continuing from interrupted precomputation..." << std::endl;
 	}
-	
+
 	Partfile.seekp(0, std::ios::end);
-	
+
 	(*Con)->Progress();
 	// Generate rainbow table
 	for(int i = 0; i < m_nProcessorCount; i++)
@@ -177,7 +177,7 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 		tEnd = time(NULL);
 		if(tEnd - tStart > 0.1)
 		{
-			
+
 			int nPercent = ((float)nCalculatedChains / (float)nRainbowChainCount) * 100;
 			int nRate = (GetCurrentCalculatedChains() - nOldCalculatedchains) / 0.1;
 
@@ -219,7 +219,7 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 				if(nNewChains == 0)
 					break;
 				nCalculatedChains += nNewChains;
-				
+
 				Partfile.write(data, nNewChains * 16);
 				Partfile.flush();
 
@@ -258,12 +258,12 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 	std::cout << "ok!" << std::endl << "Compressing content before sending";
 
 	/*uLongf len = nRainbowChainCount*1.1+12;
-	unsigned char *buffer = new unsigned char[len];
-	compress((Bytef *)buffer, &len, (Bytef *)chains, nRainbowChainCount * 16);
-	FILE *zipFile = fopen(sFilename.append(".zip").c_str(), "wb");
-	fwrite(buffer, 1, len, zipFile);
-	fclose(zipFile);
-	std::cout << "ok!" << std::endl;
+	  unsigned char *buffer = new unsigned char[len];
+	  compress((Bytef *)buffer, &len, (Bytef *)chains, nRainbowChainCount * 16);
+	  FILE *zipFile = fopen(sFilename.append(".zip").c_str(), "wb");
+	  fwrite(buffer, 1, len, zipFile);
+	  fclose(zipFile);
+	  std::cout << "ok!" << std::endl;
 	// Done sorting*/
 	return 0;
 }

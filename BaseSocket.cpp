@@ -51,15 +51,15 @@ void CBaseSocket::operator <<(std::string Line)
 void CBaseSocket::operator <<(std::vector<unsigned char> Data)
 {
 	char *szData = new char[Data.size()];
-    unsigned int i;
-    for (i=0; i < Data.size(); i++)
+	unsigned int i;
+	for (i=0; i < Data.size(); i++)
 	{
-         szData[i] = Data[i];
+		szData[i] = Data[i];
 	}
 	if(send(rSocket, szData, Data.size(), 0) == SOCKET_ERROR)
 	{
 		delete szData;
-		
+
 		std::cout << "Error while sending data: " << GetSocketError();
 	}	
 	delete szData;
@@ -72,7 +72,7 @@ void CBaseSocket::operator >>(std::string &Line)
 	int nBytes = recv(rSocket, buf, sizeof(buf), 0);
 	if(nBytes == SOCKET_ERROR)
 	{
-		
+
 		std::cout << "Error while recieving data from client: " << GetSocketError();
 	}
 	Line.assign(buf, nBytes);
@@ -80,7 +80,7 @@ void CBaseSocket::operator >>(std::string &Line)
 
 void CBaseSocket::operator >>(std::vector<unsigned char> &Data)
 {
-    u_long arg = 0;
+	u_long arg = 0;
 	while(arg == 0)
 	{
 		if (ioctl(rSocket, FIONREAD, &arg) == SOCKET_ERROR)
@@ -92,12 +92,12 @@ void CBaseSocket::operator >>(std::vector<unsigned char> &Data)
 	int nBytes = recv(rSocket, buf, sizeof(buf), 0);
 	if(nBytes == SOCKET_ERROR)
 	{
-		
+
 		std::cout << "Error while recieving data from client: " << GetSocketError();
 	}
 	for (int i=0; i < nBytes; i++)
 	{
-        Data.push_back(buf[i]); 	
+		Data.push_back(buf[i]); 	
 	}
 }
 
@@ -112,7 +112,7 @@ std::string CBaseSocket::ReceiveBytes(void *argPtr, void (*callback)(void *arg, 
 		{
 			std::cout << "Error while running ioctl(): " << GetSocketError();
 		}
-		
+
 		if (arg > 8192) arg = 8192;
 
 		int rv = recv(rSocket, buf, sizeof(buf), 0);
@@ -130,7 +130,7 @@ void CBaseSocket::SendBytes(const char *s, int length)
 {
 	if(send(rSocket,s,length,0) == SOCKET_ERROR)
 	{
-		
+
 		std::cout << "Error while running ioctl(): " << GetSocketError();
 	}
 }

@@ -10,9 +10,9 @@
 void QuickSort(RainbowChain* pChain, int nLow, int nHigh);
 class CRainbowTableGenerator
 {
-public:
+	public:
 	CRainbowTableGenerator(int nNumProcessors);
-public:
+	public:
 	~CRainbowTableGenerator(void);
 	int CalculateTable(std::string sFilename, int nRainbowChainCount, std::string sHashRoutineName, std::string sCharsetName, int nPlainLenMin, int nPlainLenMax, int nRainbowTableIndex, int nRainbowChainLen, uint64 nChainStart, std::string sSalt, CClientSocket**);
 
@@ -30,7 +30,7 @@ public:
 	}
 	int GetProcessorCount() { return m_nProcessorCount; }
 
-private:
+	private:
 	int m_nCalculationSpeed;
 	int m_nCurrentCalculatedChains;
 	int m_nProcessorCount;

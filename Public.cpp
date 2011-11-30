@@ -2,7 +2,7 @@
    RainbowCrack - a general propose implementation of Philippe Oechslin's faster time-memory trade-off technique.
 
    Copyright (C) Zhu Shuanglei <shuanglei@hotmail.com>
-*/
+   */
 #include <sstream>
 #include "Public.h"
 
@@ -114,7 +114,7 @@ string uint64tohexstr(uint64 n)
 	char str[32];
 
 	sprintf(str, "%016llx", n);
-	
+
 	return str;
 }
 

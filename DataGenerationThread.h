@@ -8,7 +8,7 @@
 class CDataGenerationThread :
 	public CThread
 {
-public:
+	public:
 	CDataGenerationThread(void);
 	void threadProc();
 	~CDataGenerationThread(void);
@@ -21,7 +21,7 @@ public:
 		m_nChainsCalculated = 0;
 		return tmp;
 	}
-private:
+	private:
 	unsigned char zBuffer[DATA_CHUNK_SIZE]; // Used to store temporary data. Can contain 20000 chains (32kb)
 	unsigned char zDataChunk[DATA_CHUNK_SIZE]; // Used to store data a generated data chunk. Can contain 20000 chains (32kb)
 	int bDataReady; // Used to signal if buffer is filled with data. 0 = empty. 1 = buffer is full

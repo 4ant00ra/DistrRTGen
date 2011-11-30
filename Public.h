@@ -2,7 +2,7 @@
    RainbowCrack - a general propose implementation of Philippe Oechslin's faster time-memory trade-off technique.
 
    Copyright (C) Zhu Shuanglei <shuanglei@hotmail.com>
-*/
+   */
 
 #ifndef _PUBLIC_H
 #define _PUBLIC_H
@@ -59,9 +59,9 @@ void Logo();
 
 typedef struct
 {
-        int nRainbowChainLen;
-        int nChainCount;
-        uint64 nChainStart;
+	int nRainbowChainLen;
+	int nChainCount;
+	uint64 nChainStart;
 } DataGenerationThreadParameters;
 
 

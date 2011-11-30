@@ -6,18 +6,18 @@
 
 class CThread
 {
-protected:
+	protected:
 	int bTerminateThreadFlag;
-        DataGenerationThreadParameters *Params;;
+	DataGenerationThreadParameters *Params;;
 
 	pthread_t threadHandle;
-public:
+	public:
 	int IsTerminated() { return bTerminateThreadFlag; }
 	CThread(void);
 	void Start(DataGenerationThreadParameters *Parameters);
 	void Stop();
 	virtual void threadProc() = 0;
-public:
+	public:
 	virtual ~CThread(void);
 };
 

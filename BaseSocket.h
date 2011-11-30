@@ -12,22 +12,22 @@
 #include <vector>
 
 #ifndef INVALID_SOCKET
-	#define INVALID_SOCKET -1
+#define INVALID_SOCKET -1
 #endif
 
 #ifndef SOCKET_ERROR	
-	#define SOCKET_ERROR -1
+#define SOCKET_ERROR -1
 #endif
 
 #define SOCKET int
 
 class CBaseSocket
 {
-public:
+	public:
 	CBaseSocket(int nSocketType, int nProtocol);
 	CBaseSocket(SOCKET rNewSocket);
 	~CBaseSocket(void);
-public:
+	public:
 	std::string GetPeerName();
 	// Used to send test with
 	void operator << (std::string Line);
@@ -43,11 +43,11 @@ public:
 	operator SOCKET() const {
 		return rSocket;
 	}
-protected:
+	protected:
 	SOCKET rSocket;
-private:
+	private:
 	static int nAmountSockets;
-protected:
+	protected:
 	inline std::string GetSocketError()
 	{
 		std::string szErrorDesc;

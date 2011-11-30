@@ -44,7 +44,7 @@ int CClientSocket::RequestWork(stWorkInfo* Work)
 	Work->nChainLength = 75;
 	//Work->nChainLength = ston(line[4]);
 	Work->nChainCount = ston(line[5]);
-	
+
 	Work->nChainStart = ston(line[6]);
 	Work->sHashRoutine = line[7];
 	Work->sCharset = line[8];

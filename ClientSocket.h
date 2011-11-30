@@ -9,9 +9,9 @@
 class CClientSocket :
 	public CBaseSocket
 {
-private:
+	private:
 	char szHostname[64];
-public:
+	public:
 	CClientSocket(void);
 	CClientSocket(int, int, std::string, int);
 	void Progress(void);

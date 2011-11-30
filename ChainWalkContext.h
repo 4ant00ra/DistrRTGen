@@ -2,7 +2,7 @@
    RainbowCrack - a general propose implementation of Philippe Oechslin's faster time-memory trade-off technique.
 
    Copyright (C) Zhu Shuanglei <shuanglei@hotmail.com>
-*/
+   */
 
 #ifndef _CHAINWALKCONTEXT_H
 #define _CHAINWALKCONTEXT_H
@@ -12,11 +12,11 @@
 
 class CChainWalkContext
 {
-public:
+	public:
 	CChainWalkContext();
 	virtual ~CChainWalkContext();
 
-private:
+	private:
 	static string m_sHashRoutineName;	
 	static HASHROUTINE m_pHashRoutine;							// Configuration
 	static int m_nHashLen;										// Configuration
@@ -40,10 +40,10 @@ private:
 	unsigned char m_Hash[MAX_HASH_LEN];
 	static unsigned char m_Salt[MAX_SALT_LEN];
 	static int m_nSaltLen;
-private:
+	private:
 	static bool LoadCharset(string sName);
 
-public:
+	public:
 	static bool SetHashRoutine(string sHashRoutineName);												// Configuration
 	static bool SetPlainCharset(string sCharsetName, int nPlainLenMin, int nPlainLenMax);				// Configuration
 	static bool SetRainbowTableIndex(int nRainbowTableIndex);	
