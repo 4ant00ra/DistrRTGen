@@ -116,7 +116,6 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 	else if(sHashRoutineName == "halflmchall")
 	{
 	}
-	CChainWalkContext::Dump();	
 
 	// FileName
 	std::ofstream Partfile;
@@ -176,13 +175,26 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 	while(nCalculatedChains < nRainbowChainCount)
 	{
 		tEnd = time(NULL);
-		if(tEnd - tStart > 1)
+		if(tEnd - tStart > 0.1)
 		{
 			
 			int nPercent = ((float)nCalculatedChains / (float)nRainbowChainCount) * 100;
-			int nRate = (GetCurrentCalculatedChains() - nOldCalculatedchains) / 2;
-			std::cout << "\rPercent completed: " << nPercent << "%";
+			int nRate = (GetCurrentCalculatedChains() - nOldCalculatedchains) / 0.1;
+
+			// Display
+			std::cout << "\r";
+			std::cout << "| [";
+			std::cout << string((int)nPercent/5,'=');
+			if(nPercent%5 > 2)
+				std::cout << "-";
+			std::cout << string(20-(int)nPercent/5 - (nPercent%5 > 2 ? 1:0),'.');
+			std::cout <<"] ";
+			std::cout.fill(' ');
+			std::cout.width(3);
+			std::cout << nPercent;
+			std::cout << "% |";
 			std::cout.flush();
+
 
 			(*Con)->Progress(ston(sFilename),nRate,nPercent);
 			nOldCalculatedchains = m_nCurrentCalculatedChains;
@@ -224,9 +236,9 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 				nChainStart += 50000;
 			}
 		}
-		Sleep(1);
 
 	}
+	std::cout << std::endl;
 	// Stop the threads again and destroy them
 	for(int i = 0; i < m_nProcessorCount; i++)
 	{

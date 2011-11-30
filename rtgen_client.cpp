@@ -2,6 +2,7 @@
 //
 #include <errno.h>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <pwd.h>
 #include <signal.h>
@@ -20,7 +21,9 @@
 #define CPU_INFO_FILENAME "/proc/cpuinfo"
 #define MAX_PART_SIZE 8000000 //size of PART file
 #define CLIENT_WAIT_TIME_SECONDS 600 // Wait 10 min and try again
-#define VERSION "1.0 LX"
+#define VERSION "1.0"
+using std::cout;
+using std::endl;
 
 enum TALKATIVE
 {
@@ -33,6 +36,8 @@ CClientSocket *Con = new CClientSocket(SOCK_STREAM, 0, SERVER, PORT);
 
 void End(int nSig)
 {
+	cout << endl;
+	cout << "+-----------------------------+\n";
 	Con->Close();
 	exit(-1);
 }
@@ -57,17 +62,6 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	// with which MACRO I have been compiled with..
-	#ifdef _FAST_HASH_
-		if(nTalkative <= TK_ALL)
-			std::cout << "Compiled with Fast and thread safe Hashroutines" << std::endl;
-	#endif
-	#ifdef _FAST_MD5_
-		if(nTalkative <= TK_ALL)
-			std::cout << "Compiled with Fast and thread unsafe MD5 Hashroutine" << std::endl;
-	#endif
-	
-	
 	// Try to catch cpu Frequency from /proc/cpuinfo
 	const char* cpuprefix = "cpu MHz";
 	FILE* F;
@@ -86,33 +80,25 @@ int main(int argc, char* argv[])
 	//read lines
 	while (!feof(F))
   	{
-	fgets (cpuline, sizeof(cpuline), F);
-	// test if it's the frequency line
-	if (!strncmp(cpuline, cpuprefix, strlen(cpuprefix)))
+		fgets (cpuline, sizeof(cpuline), F);
+		// test if it's the frequency line
+		if (!strncmp(cpuline, cpuprefix, strlen(cpuprefix)))
 		{
-	  		// Yes, grep the frequency
-	  		pos = strrchr (cpuline, ':') +2;
-	  		if (!pos) break;
-	  		if (pos[strlen(pos)-1] == '\n') pos[strlen(pos)-1] = '\0';
-	  		strcpy (cpuline, pos);
-	  		strcat (cpuline,"e6");
-	  		nFrequency = atof (cpuline)/1000000;
-	  		ok = 1;
+			// Yes, grep the frequency
+			pos = strrchr (cpuline, ':') +2;
+			if (!pos) break;
+			if (pos[strlen(pos)-1] == '\n') pos[strlen(pos)-1] = '\0';
+			strcpy (cpuline, pos);
+			strcat (cpuline,"e6");
+			nFrequency = atof (cpuline)/1000000;
+			ok = 1;
 		}
   	}
 	nNumProcessors = sysconf(_SC_NPROCESSORS_ONLN);
-	if(nTalkative <= TK_ALL)
-		 std::cout << nNumProcessors <<" processor(s) found." << std::endl;
 	
-	if (ok == 1)
+	if (ok != 1)
 	{
-		if(nTalkative <= TK_ALL)
-			std::cout << "CPU frequency has been found : " << nFrequency << " MHz" << std::endl;
-	}
-	else
-	{
-		if(nTalkative <= TK_ALL)
-			std::cout << "Unable to get cpu frequency from /proc/cpuinfo." << std::endl;
+		cout << "Unable to get cpu frequency from /proc/cpuinfo." << endl;
 		exit(-1);
 	}
 	
@@ -147,35 +133,36 @@ int main(int argc, char* argv[])
 		std::string sFileName;
 		std::stringstream szFileName;
 
-		szFileName << stWork.nPartID << ".part"; // Store it in the users home directory
+		szFileName << stWork.nPartID << ".part";
 		sFileName = szFileName.str();
 		cFileName = sFileName.c_str();
 		FILE *partfile = fopen(cFileName,"rb");
 		if(partfile != NULL)
 		{
-			if(nTalkative <= TK_ALL)
-				std::cout << "Deleting " << cFileName << std::endl;
 			if( remove(cFileName) != 0 )
 			{
-				if(nTalkative <= TK_ALL)
-					std::cout << "Error deleting file, please manually delete it." << std::endl;
+				cout << "Error deleting file, please manually delete it." << endl;
 				exit(-1);
 			}
-			else
-				if(nTalkative <= TK_ALL)
-					std::cout << "File successfully deleted." << std::endl;
-		}
-		else
-		{
-			if(nTalkative <= TK_ALL)
-				std::cout << "No unfinished part file." << std::endl;
 		}
 	}
-	if(nTalkative <= TK_ALL)
-		std::cout << "Initializing DistrRTgen " << VERSION << std::endl;
+
+	/* Main thread starting up */
 	CRainbowTableGenerator *pGenerator = new CRainbowTableGenerator(nNumProcessors);
-	if(nTalkative <= TK_ALL)
-		std::cout << "Generating using " << pGenerator->GetProcessorCount() << " processor(s)..." << std::endl;
+	//	          1          2
+	//       123456789012345667890123
+	cout << "+" << string(29,'-') << "+" << endl; // 24 Chars
+	cout << "|     Starting RTCrack " << VERSION << "    |" << endl;
+	cout.fill(' ');
+	cout.width(28);
+	cout << left << "| Processors: ";
+	cout << right << pGenerator->GetProcessorCount() << " |" << endl;
+	cout.fill(' ');
+	cout.width(25);
+	cout << left << "| Frequency: ";
+	cout << right << (int)nFrequency << " |" << endl;
+	cout << "+" << string(29,'-') << "+" << endl; // 24 Chars
+
 
 	while(1)
 	{
@@ -186,8 +173,8 @@ int main(int argc, char* argv[])
 		{
 			if(nTalkative <= TK_ALL)
 			{
-				std::cout << "OK" << std::endl;
-				std::cout << "Requesting work...";
+				cout << "OK" << endl;
+				cout << "Requesting work...";
 			}
 			int errorCode = Con->RequestWork(&stWork);
 
@@ -195,20 +182,20 @@ int main(int argc, char* argv[])
 			{
 				if(errorCode == 1)
 				{
-					std::cout << "Failed to request work. Invalid username/password combination" << std::endl;
+					cout << "Failed to request work. Invalid username/password combination" << endl;
 				}
 				else
 				{
-					std::cout << "Failed to request work. Unknown error code recieved" << errorCode << " recieved" << std::endl;
+					cout << "Failed to request work. Unknown error code recieved" << errorCode << " recieved" << endl;
 				}
 				return 1;						
 			}					
 			if(nTalkative <= TK_ALL)
-				std::cout << "work received !" << std::endl;
+				cout << "work received !" << endl;
 			FILE *fileResume = fopen(sResumeFile.str().c_str(), "wb");
 			if(fileResume == NULL)
 			{
-				std::cout << "Unable to open " << sResumeFile.str() << " for writing" << std::endl;
+				cout << "Unable to open " << sResumeFile.str() << " for writing" << endl;
 				return 1;
 			}
 			fwrite(&stWork, sizeof(unsigned int), 6, fileResume); // Write the 6 unsigned ints
@@ -224,18 +211,12 @@ int main(int argc, char* argv[])
 
 		// do the work
 		int nReturn;
-		if(nTalkative <= TK_ALL)
-			std::cout << "Starting multithreaded rainbowtable generator..." << std::endl;
-
-		if(nTalkative >= TK_WARNINGS)
-			std::freopen("/dev/null", "w", stdout);	
-
 
 		if((nReturn = pGenerator->CalculateTable(szFileName.str(), stWork.nChainCount, stWork.sHashRoutine, stWork.sCharset, stWork.nMinLetters, stWork.nMaxLetters, stWork.nOffset, stWork.nChainLength, stWork.nChainStart, stWork.sSalt, &Con)) != 0)
 		{
 			if(nTalkative >= TK_WARNINGS)
 				std::freopen("/dev/stdout", "w", stdout);	
-			std::cout << "Error id " << nReturn << " received while generating table";
+			cout << "Error id " << nReturn << " received while generating table";
 			return nReturn;
 		}
 
@@ -243,7 +224,7 @@ int main(int argc, char* argv[])
 			std::freopen("/dev/stdout", "w", stdout);	
 
 		if(nTalkative <= TK_ALL)
-			std::cout << "Calculations of part " << stWork.nPartID << " completed. Sending data..." << std::endl;
+			cout << "Calculations of part " << stWork.nPartID << " completed. Sending data..." << endl;
 		return -1;
 		nResult = -1;
 		while(nResult != 0 && nResult != 1)
@@ -252,7 +233,7 @@ int main(int argc, char* argv[])
 			if(nResult == 0)
 			{
 				if(nTalkative <= TK_ALL)
-					std::cout << "Data delivered!" << std::endl;
+					cout << "Data delivered!" << endl;
 				remove(szFileName.str().c_str());		
 				stWork.sCharset = ""; // Blank out the charset to indicate the work is complete
 				unlink(sResumeFile.str().c_str());
@@ -260,7 +241,7 @@ int main(int argc, char* argv[])
 			else if(nResult == 1)
 			{
 				if(nTalkative <= TK_ALL)
-					std::cout << "Data was not accepted by the server. Dismissing" << std::endl;
+					cout << "Data was not accepted by the server. Dismissing" << endl;
 				remove(szFileName.str().c_str());
 				stWork.sCharset = ""; // Blank out the charset to indicate the work is complete
 				unlink(sResumeFile.str().c_str());
@@ -268,7 +249,7 @@ int main(int argc, char* argv[])
 			else
 			{
 				if(nTalkative <= TK_ALL)
-					std::cout << "Could not transfer data to server. Retrying in " << CLIENT_WAIT_TIME_SECONDS / 60 << " minutes" << std::endl;
+					cout << "Could not transfer data to server. Retrying in " << CLIENT_WAIT_TIME_SECONDS / 60 << " minutes" << endl;
 				Sleep(CLIENT_WAIT_TIME_SECONDS * 1000);
 			}
 			break;

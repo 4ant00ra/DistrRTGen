@@ -311,39 +311,6 @@ int CChainWalkContext::GetRainbowTableIndex()
 	return m_nRainbowTableIndex;
 }
 
-void CChainWalkContext::Dump()
-{
-	printf("hash routine: %s\n", m_sHashRoutineName.c_str());
-	printf("hash length: %d\n", m_nHashLen);
-
-	printf("plain charset: ");
-	int i;
-	for (i = 0; i < m_nPlainCharsetLen; i++)
-	{
-		if (isprint(m_PlainCharset[i]))
-			printf("%c", m_PlainCharset[i]);
-		else
-			printf("?");
-	}
-	printf("\n");
-
-	printf("plain charset in hex: ");
-	for (i = 0; i < m_nPlainCharsetLen; i++)
-		printf("%02x ", m_PlainCharset[i]);
-	printf("\n");
-
-	printf("plain length range: %d - %d\n", m_nPlainLenMin, m_nPlainLenMax);
-	printf("plain charset name: %s\n", m_sPlainCharsetName.c_str());
-	//printf("plain charset content: %s\n", m_sPlainCharsetContent.c_str());
-	//for (i = 0; i <= m_nPlainLenMax; i++)
-	//	printf("plain space up to %d: %s\n", i, uint64tostr(m_nPlainSpaceUpToX[i]).c_str());
-	printf("plain space total: %s\n", uint64tostr(m_nPlainSpaceTotal).c_str());
-
-	printf("rainbow table index: %d\n", m_nRainbowTableIndex);
-	printf("reduce offset: %s\n", uint64tostr(m_nReduceOffset).c_str());
-	printf("\n");
-}
-
 void CChainWalkContext::GenerateRandomIndex()
 {
 	RAND_bytes((unsigned char*)&m_nIndex, 8);

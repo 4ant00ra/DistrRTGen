@@ -57,7 +57,6 @@ public:
 	static int GetPlainLenMax();
 	static uint64 GetPlainSpaceTotal();
 	static int GetRainbowTableIndex();
-	static void Dump();
 
 	void GenerateRandomIndex();
 	void SetIndex(uint64 nIndex);
