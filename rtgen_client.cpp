@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <pwd.h>
+#include <signal.h>
 #include <sstream>
 #include <stdio.h>
 #include <sys/resource.h> //renice main thread
@@ -28,6 +29,13 @@ enum TALKATIVE
 	TK_ERRORS
 };
 
+CClientSocket *Con = new CClientSocket(SOCK_STREAM, 0, SERVER, PORT);
+
+void End(int nSig)
+{
+	Con->Close();
+	exit(-1);
+}
 
 int main(int argc, char* argv[])
 {
@@ -68,6 +76,8 @@ int main(int argc, char* argv[])
 	int ok = 0;
 	
 	nNumProcessors = 0;
+
+	signal(SIGINT, &End);
 	
 	// open cpuinfo system file
 	F = fopen(CPU_INFO_FILENAME,"r");
@@ -106,7 +116,6 @@ int main(int argc, char* argv[])
 		exit(-1);
 	}
 	
-	CClientSocket *Con = new CClientSocket(SOCK_STREAM, 0, SERVER, PORT);
 	stWorkInfo stWork;
 	
 	// Check to see if there is something to resume from
