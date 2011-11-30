@@ -24,7 +24,7 @@ RANLIB := ranlib
 PREFIX?  := /usr/local/bin
 
 DEBUG_CFLAGS     :=  -D_FAST_HASH_ -D_FILE_OFFSET_BITS=64 -Wall -Wno-format -g -DDEBUG
-RELEASE_CFLAGS   :=  -D_FAST_HASH_ -D_FILE_OFFSET_BITS=64 -Wno-unknown-pragmas -Wno-format -march=native -O2
+RELEASE_CFLAGS   :=  -D_FAST_MD5_ -D_FAST_HASH_ -D_FILE_OFFSET_BITS=64 -Wno-unknown-pragmas -Wno-format -march=native -O2
 
 LIBS		 := -lz -lcrypto -lpthread
 
@@ -77,7 +77,7 @@ all: ${OUTPUT}
 # Source files
 #****************************************************************************
 
-SRCS := Public.cpp ChainWalkContext.cpp HashAlgorithm.cpp HashRoutine.cpp rtgen_client.cpp BaseSocket.cpp ClientSocket.cpp Thread.cpp DataGenerationThread.cpp RainbowTableGenerator.cpp
+SRCS := Public.cpp ChainWalkContext.cpp HashAlgorithm.cpp HashRoutine.cpp rtgen_client.cpp BaseSocket.cpp ClientSocket.cpp Thread.cpp DataGenerationThread.cpp RainbowTableGenerator.cpp MD5new.cpp
 
 # Add on the sources for libraries
 SRCS := ${SRCS}

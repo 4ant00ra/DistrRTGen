@@ -22,7 +22,6 @@ void CThread::Stop() {
 	// Note: our end() function will stall the calling thread until this thread finishes executing.
 
 	// remember our waitForSingleObject function?  Let's use it here to wait for our thread to finish.
-	pthread_join(threadHandle, NULL);
 }
 
 void StartThreadFunction(CThread* pThread)
@@ -38,6 +37,7 @@ void CThread::Start(DataGenerationThreadParameters *Parameters)
 	int nRet = pthread_create(&threadHandle, NULL, (void*(*)(void*))StartThreadFunction, (void*) this);
 	if(nRet != 0)
 	{
-		std::cout << "ERROR: pthread_create() returned " << nRet;
-	}	
+		std::cout << "ERROR: pthread_create() returned " << strerror(nRet) << endl;
+	}
+	pthread_detach(threadHandle);
 }
