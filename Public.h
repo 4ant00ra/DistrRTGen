@@ -53,6 +53,8 @@ void ParseHash(string sHash, unsigned char* pHash, int& nHashLen);
 
 int ston(string);
 
+void getNext(string*, string);
+
 void Logo();
 
 typedef struct

@@ -155,6 +155,20 @@ int ston(string x)
 	return res;
 }
 
+void getNext(string* x, string text)
+{
+	unsigned int pos = 0;
+	int element = 0;
+	while(pos != string::npos)
+	{
+		pos = text.find(',');
+		x[element] = text.substr(0,pos);
+		element++;
+		text = text.substr(pos+1);
+	}
+}
+
+
 void Logo()
 {
 	printf("RainbowCrack 1.2 - Making a Faster Cryptanalytic Time-Memory Trade-Off\n");

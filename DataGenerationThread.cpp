@@ -62,7 +62,7 @@ void CDataGenerationThread::threadProc()
 #ifdef DEBUG
 				std::cout << "WARNING: Data buffer is not emptied yet!" << std::endl;
 #endif
-				Sleep(10);
+				Sleep(1);
 			}
 			// Copy the data over
 			memcpy(zDataChunk, zBuffer, DATA_CHUNK_SIZE);

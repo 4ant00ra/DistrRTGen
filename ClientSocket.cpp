@@ -25,29 +25,27 @@ CClientSocket::CClientSocket(int nSocketType, int nProtocol, std::string szHost,
 		std::ostringstream szError;
 		std::cout << "Error while trying to connect to '" << szHost << "' : " << GetSocketError();
 	}
-
 }
 
 int CClientSocket::RequestWork(stWorkInfo* Work)
 {
-	int part;
-	std::string line;
-	stringstream ss;
+	std::string line[10];
+	std::string info;
 	*this << "work\n";
-	*this >> line;
+	*this >> info;
 
-	part = ston(line.substr(0,line.find('\n')));
+	getNext(line,info);
+
+	Work->nPartID = ston(line[0]);
+	Work->nMinLetters = ston(line[1]);
+	Work->nMaxLetters = ston(line[2]);
+	Work->nOffset = ston(line[3]);
+	Work->nChainLength = ston(line[4]);
+	Work->nChainCount = ston(line[5]);
 	
-	Work->nPartID = 1;
-	Work->nMinLetters = 1;
-	Work->nMaxLetters = 6;
-	Work->nOffset = 0;
-	Work->nChainLength = 500;
-	Work->nChainCount = 2000000;
-	
-	Work->nChainStart = 0;
-	Work->sHashRoutine = "md5";
-	Work->sCharset = "numeric";
+	Work->nChainStart = ston(line[6]);
+	Work->sHashRoutine = line[7];
+	Work->sCharset = line[8];
 	Work->sSalt = "";
 	return 0;
 }
