@@ -9,11 +9,13 @@
 class CClientSocket :
 	public CBaseSocket
 {
+private:
+	char szHostname[64];
 public:
 	CClientSocket(void);
 	CClientSocket(int, int, std::string, int);
 	void Progress(void);
-	void Progress(int, char*, float);
+	void Progress(int,int,int);
 	std::string GetWork(void);
 	void Close(void);
 	int SendFinishedWork(unsigned int&, std::basic_stringstream<char>::__string_type);

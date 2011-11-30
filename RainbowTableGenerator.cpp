@@ -4,6 +4,7 @@
 #include <time.h>
 #include <zlib.h>
 
+#include "ClientSocket.h"
 #include "ChainWalkContext.h"
 #include "RainbowTableGenerator.h"
 
@@ -83,7 +84,7 @@ CRainbowTableGenerator::~CRainbowTableGenerator(void)
 	delete [] m_pThreads;
 }
 
-int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowChainCount, std::string sHashRoutineName, std::string sCharsetName, int nPlainLenMin, int nPlainLenMax, int nRainbowTableIndex, int nRainbowChainLen, uint64 nChainStart, std::string sSalt)
+int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowChainCount, std::string sHashRoutineName, std::string sCharsetName, int nPlainLenMin, int nPlainLenMax, int nRainbowTableIndex, int nRainbowChainLen, uint64 nChainStart, std::string sSalt, CClientSocket** Con)
 {
 	// Setup CChainWalkContext
 	if (!CChainWalkContext::SetHashRoutine(sHashRoutineName))
@@ -153,6 +154,7 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 	
 	Partfile.seekp(0, std::ios::end);
 	
+	(*Con)->Progress();
 	// Generate rainbow table
 	for(int i = 0; i < m_nProcessorCount; i++)
 	{
@@ -174,15 +176,15 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 	while(nCalculatedChains < nRainbowChainCount)
 	{
 		tEnd = time(NULL);
-		if(tEnd - tStart > 10)
+		if(tEnd - tStart > 1)
 		{
-			system("clear");
-			float nPercent = (float)nCalculatedChains / (float)nRainbowChainCount;
-			nPercent *= 100;
-			std::cout << "Working on: Part " << sFilename << "," << nRainbowChainCount << "," << sHashRoutineName << "," << sCharsetName << "," << nPlainLenMin << "," << nPlainLenMax << "," << nRainbowTableIndex << "," << nRainbowChainLen << std::endl;
-			std::cout << "Current chain speed: " << ((GetCurrentCalculatedChains() - nOldCalculatedchains) / 10) << std::endl;			
-			std::cout.precision(2);
-			std::cout << "Percent completed: " << nPercent << "%" << std::endl;
+			
+			int nPercent = ((float)nCalculatedChains / (float)nRainbowChainCount) * 100;
+			int nRate = (GetCurrentCalculatedChains() - nOldCalculatedchains) / 2;
+			std::cout << "\rPercent completed: " << nPercent << "%";
+			std::cout.flush();
+
+			(*Con)->Progress(ston(sFilename),nRate,nPercent);
 			nOldCalculatedchains = m_nCurrentCalculatedChains;
 			tStart = time(NULL);
 		}

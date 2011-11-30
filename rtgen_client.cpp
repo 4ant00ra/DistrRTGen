@@ -231,7 +231,7 @@ int main(int argc, char* argv[])
 			std::freopen("/dev/null", "w", stdout);	
 
 
-		if((nReturn = pGenerator->CalculateTable(szFileName.str(), stWork.nChainCount, stWork.sHashRoutine, stWork.sCharset, stWork.nMinLetters, stWork.nMaxLetters, stWork.nOffset, stWork.nChainLength, stWork.nChainStart, stWork.sSalt)) != 0)
+		if((nReturn = pGenerator->CalculateTable(szFileName.str(), stWork.nChainCount, stWork.sHashRoutine, stWork.sCharset, stWork.nMinLetters, stWork.nMaxLetters, stWork.nOffset, stWork.nChainLength, stWork.nChainStart, stWork.sSalt, &Con)) != 0)
 		{
 			if(nTalkative >= TK_WARNINGS)
 				std::freopen("/dev/stdout", "w", stdout);	

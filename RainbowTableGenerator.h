@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 
+#include "ClientSocket.h"
 #include "DataGenerationThread.h"
 
 void QuickSort(RainbowChain* pChain, int nLow, int nHigh);
@@ -13,7 +14,7 @@ public:
 	CRainbowTableGenerator(int nNumProcessors);
 public:
 	~CRainbowTableGenerator(void);
-	int CalculateTable(std::string sFilename, int nRainbowChainCount, std::string sHashRoutineName, std::string sCharsetName, int nPlainLenMin, int nPlainLenMax, int nRainbowTableIndex, int nRainbowChainLen, uint64 nChainStart, std::string sSalt = "");
+	int CalculateTable(std::string sFilename, int nRainbowChainCount, std::string sHashRoutineName, std::string sCharsetName, int nPlainLenMin, int nPlainLenMax, int nRainbowTableIndex, int nRainbowChainLen, uint64 nChainStart, std::string sSalt, CClientSocket**);
 
 	int GetCurrentCalculatedChains()
 	{

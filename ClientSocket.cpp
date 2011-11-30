@@ -5,6 +5,7 @@
 
 CClientSocket::CClientSocket(int nSocketType, int nProtocol, std::string szHost, int nPort) : CBaseSocket(nSocketType, nProtocol)
 {
+	gethostname(szHostname, 64);
 	std::string error;
 
 	hostent *he;
@@ -55,15 +56,16 @@ void CClientSocket::Progress(void)
 	*this << "progress\n";
 }
 
-void CClientSocket::Progress(int nPart, char* czHostname, float fProg)
+void CClientSocket::Progress(int nPart, int nRate, int nPerc)
 {
 	std::stringstream ssData;
-	ssData << nPart << ":" << czHostname << ":" << fProg << "\n";
+	ssData << nPart << ":" << szHostname << ":" << nRate << ":" << nPerc << "\n";
 	*this << ssData.str();
 }
 
 void CClientSocket::Close(void)
 {
+	*this << "done\n";
 	*this << "quit\n";
 }
 
