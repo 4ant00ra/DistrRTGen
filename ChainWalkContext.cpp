@@ -341,15 +341,6 @@ void CChainWalkContext::IndexToPlain()
 
 	uint64 nIndexOfX = m_nIndex - m_nPlainSpaceUpToX[m_nPlainLen - 1];
 
-	/*
-	// Slow version
-	for (i = m_nPlainLen - 1; i >= 0; i--)
-	{
-	m_Plain[i] = m_PlainCharset[nIndexOfX % m_nPlainCharsetLen];
-	nIndexOfX /= m_nPlainCharsetLen;
-	}
-	*/
-
 	// Fast version
 	for (i = m_nPlainLen - 1; i >= 0; i--)
 	{
