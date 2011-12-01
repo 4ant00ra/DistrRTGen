@@ -253,17 +253,15 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowCh
 	RainbowChain *chains = new RainbowChain[nRainbowChainCount];
 	fread(chains, 16, nRainbowChainCount, partFile);
 	fclose(partFile);
-	std::cout << "Sorting file...";
-	QuickSort(chains, 0, nRainbowChainCount - 1);
-	std::cout << "ok!" << std::endl << "Compressing content before sending";
 
-	/*uLongf len = nRainbowChainCount*1.1+12;
-	  unsigned char *buffer = new unsigned char[len];
-	  compress((Bytef *)buffer, &len, (Bytef *)chains, nRainbowChainCount * 16);
-	  FILE *zipFile = fopen(sFilename.append(".zip").c_str(), "wb");
-	  fwrite(buffer, 1, len, zipFile);
-	  fclose(zipFile);
-	  std::cout << "ok!" << std::endl;
+	QuickSort(chains, 0, nRainbowChainCount - 1);
+
+	uLongf len = nRainbowChainCount*1.1+12;
+	unsigned char *buffer = new unsigned char[len];
+	compress((Bytef *)buffer, &len, (Bytef *)chains, nRainbowChainCount * 16);
+	FILE *zipFile = fopen(sFilename.append(".zip").c_str(), "wb");
+	fwrite(buffer, 1, len, zipFile);
+	fclose(zipFile);
 	// Done sorting*/
 	return 0;
 }

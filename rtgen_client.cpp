@@ -171,11 +171,6 @@ int main(int argc, char* argv[])
 		// If there is no work to do, request some!
 		if(stWork.sCharset == "")
 		{
-			if(nTalkative <= TK_ALL)
-			{
-				cout << "OK" << endl;
-				cout << "Requesting work...";
-			}
 			int errorCode = Con->RequestWork(&stWork);
 
 			if(errorCode > 1)
@@ -190,8 +185,6 @@ int main(int argc, char* argv[])
 				}
 				return 1;						
 			}					
-			if(nTalkative <= TK_ALL)
-				cout << "work received !" << endl;
 			FILE *fileResume = fopen(sResumeFile.str().c_str(), "wb");
 			if(fileResume == NULL)
 			{
@@ -223,8 +216,6 @@ int main(int argc, char* argv[])
 		if(nTalkative >= TK_WARNINGS)
 			std::freopen("/dev/stdout", "w", stdout);	
 
-		if(nTalkative <= TK_ALL)
-			cout << "Calculations of part " << stWork.nPartID << " completed. Sending data..." << endl;
 		return -1;
 		nResult = -1;
 		while(nResult != 0 && nResult != 1)
