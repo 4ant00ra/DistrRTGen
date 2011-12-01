@@ -157,7 +157,7 @@ int ston(string x)
 
 void getNext(string* x, string text)
 {
-	unsigned int pos = 0;
+	u_int64_t pos = 0;
 	int element = 0;
 	while(pos != string::npos)
 	{
