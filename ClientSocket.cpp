@@ -41,8 +41,7 @@ int CClientSocket::RequestWork(stWorkInfo* Work)
 	Work->nMinLetters = ston(line[1]);
 	Work->nMaxLetters = ston(line[2]);
 	Work->nOffset = ston(line[3]);
-	Work->nChainLength = 75;
-	//Work->nChainLength = ston(line[4]);
+	Work->nChainLength = ston(line[4]);
 	Work->nChainCount = ston(line[5]);
 
 	Work->nChainStart = ston(line[6]);
