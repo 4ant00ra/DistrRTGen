@@ -20,7 +20,7 @@
 
 #define CPU_INFO_FILENAME "/proc/cpuinfo"
 #define MAX_PART_SIZE 8000000 //size of PART file
-#define CLIENT_WAIT_TIME_SECONDS 600 // Wait 10 min and try again
+#define CLIENT_WAIT_TIME_SECONDS 60 // Wait 10 min and try again
 #define VERSION "1.0"
 using std::cout;
 using std::endl;
@@ -171,20 +171,15 @@ int main(int argc, char* argv[])
 		// If there is no work to do, request some!
 		if(stWork.sCharset == "")
 		{
+			cout << "+" << string(29,'-') << "+" << endl;
+			cout << "| Requesting work...          |" << endl;
 			int errorCode = Con->RequestWork(&stWork);
 
-			if(errorCode > 1)
+			while(errorCode > 1)
 			{
-				if(errorCode == 1)
-				{
-					cout << "Failed to request work. Invalid username/password combination" << endl;
-				}
-				else
-				{
-					cout << "Failed to request work. Unknown error code recieved" << errorCode << " recieved" << endl;
-				}
-				return 1;						
-			}					
+				cout << "| Failed. Retrying...         |" << endl;
+				Sleep(CLIENT_WAIT_TIME_SECONDS*1000)
+
 			FILE *fileResume = fopen(sResumeFile.str().c_str(), "wb");
 			if(fileResume == NULL)
 			{
@@ -202,7 +197,6 @@ int main(int argc, char* argv[])
 		std::stringstream szFileName;
 		szFileName << stWork.nPartID << ".part"; // Store it in the users home directory
 
-		// do the work
 		int nReturn;
 
 		if((nReturn = pGenerator->CalculateTable(szFileName.str(), stWork.nChainCount, stWork.sHashRoutine, stWork.sCharset, stWork.nMinLetters, stWork.nMaxLetters, stWork.nOffset, stWork.nChainLength, stWork.nChainStart, stWork.sSalt, &Con)) != 0)
@@ -216,35 +210,40 @@ int main(int argc, char* argv[])
 		if(nTalkative >= TK_WARNINGS)
 			std::freopen("/dev/stdout", "w", stdout);	
 
-		return -1;
+		cout << "+-----------------------------+" << endl;
+		cout << "| Uploading...                |" << endl;
+
+
 		nResult = -1;
 		while(nResult != 0 && nResult != 1)
 		{
-			int nResult = Con->SendFinishedWork(stWork.nPartID, szFileName.str());
+			int nResult = Con->SendFinishedWork(szFileName.str());
 			if(nResult == 0)
 			{
-				if(nTalkative <= TK_ALL)
-					cout << "Data delivered!" << endl;
+				cout << "| Success!                    |" << endl;
 				remove(szFileName.str().c_str());		
 				stWork.sCharset = ""; // Blank out the charset to indicate the work is complete
 				unlink(sResumeFile.str().c_str());
 			}
 			else if(nResult == 1)
 			{
-				if(nTalkative <= TK_ALL)
-					cout << "Data was not accepted by the server. Dismissing" << endl;
+				cout << "| Server reassigned part      |" << endl;
 				remove(szFileName.str().c_str());
 				stWork.sCharset = ""; // Blank out the charset to indicate the work is complete
 				unlink(sResumeFile.str().c_str());
 			}
 			else
 			{
-				if(nTalkative <= TK_ALL)
-					cout << "Could not transfer data to server. Retrying in " << CLIENT_WAIT_TIME_SECONDS / 60 << " minutes" << endl;
+				cout << "| Failure... Retrying         |" << endl;
 				Sleep(CLIENT_WAIT_TIME_SECONDS * 1000);
 			}
 			break;
 		}
+
+		cout << "+-----------------------------+" << endl;
+		cout << "| Part completed and uploaded |" << endl;
+		cout << "+-----------------------------+" << endl;
+		cout << endl;
 	}
 	return 0;
 }

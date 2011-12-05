@@ -1,18 +1,22 @@
 #include <iostream>
 #include <sstream>
+#include <algorithm>
+#include <fstream>
+#include <iterator>
+#include <vector>
 #include "ClientSocket.h"
-#include "Public.h"
+using namespace std;
 
-CClientSocket::CClientSocket(int nSocketType, int nProtocol, std::string szHost, int nPort) : CBaseSocket(nSocketType, nProtocol)
+CClientSocket::CClientSocket(int nSocketType, int nProtocol, string szHost, int nPort) : CBaseSocket(nSocketType, nProtocol)
 {
 	gethostname(szHostname, 64);
-	std::string error;
+	string error;
 
 	hostent *he;
 	if ((he = gethostbyname(szHost.c_str())) == 0)
 	{
-		std::ostringstream szError;
-		std::cout << "Error while trying to resolve hostname '" << szHost << "' : " << GetSocketError();
+		ostringstream szError;
+		cout << "Error while trying to resolve hostname '" << szHost << "' : " << GetSocketError();
 	}
 
 	sockaddr_in addr;
@@ -23,15 +27,15 @@ CClientSocket::CClientSocket(int nSocketType, int nProtocol, std::string szHost,
 
 	if (connect(rSocket, (sockaddr *) &addr, sizeof(sockaddr)) == SOCKET_ERROR)
 	{
-		std::ostringstream szError;
-		std::cout << "Error while trying to connect to '" << szHost << "' : " << GetSocketError();
+		ostringstream szError;
+		cout << "Error while trying to connect to '" << szHost << "' : " << GetSocketError();
 	}
 }
 
 int CClientSocket::RequestWork(stWorkInfo* Work)
 {
-	std::string line[10];
-	std::string info;
+	string line[10];
+	string info;
 	*this << "work\n";
 	*this >> info;
 
@@ -67,7 +71,15 @@ void CClientSocket::Close(void)
 	*this << "quit\n";
 }
 
-int CClientSocket::SendFinishedWork(unsigned int& n, std::basic_stringstream<char>::__string_type x)
+int CClientSocket::SendFinishedWork(string filename)
 {
-	return -1;
+	filename.append(".zip");
+        typedef istream_iterator<char> istream_iterator;
+        ifstream file(filename.c_str(), ifstream::binary);
+        vector<unsigned char> input;
+
+        file >> noskipws;
+        copy(istream_iterator(file), istream_iterator(), back_inserter(input));
+	*this << input;
+	return 0;
 }

@@ -18,7 +18,7 @@ class CClientSocket :
 	void Progress(int,int,int);
 	std::string GetWork(void);
 	void Close(void);
-	int SendFinishedWork(unsigned int&, std::basic_stringstream<char>::__string_type);
+	int SendFinishedWork(std::string);
 	int RequestWork(stWorkInfo*);
 
 };
