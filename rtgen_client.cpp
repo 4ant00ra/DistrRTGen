@@ -48,19 +48,6 @@ int main(int argc, char* argv[])
 	double nFrequency;
 	std::string sHomedir;
 	int nNumProcessors = 0;
-	int nTalkative = TK_ALL;
-
-	if(argc > 1)
-	{
-		if(strcmp(argv[1], "-q") == 0)
-		{
-			nTalkative = TK_WARNINGS;
-		}
-		else if(strcmp(argv[1], "-Q") == 0)
-		{
-			nTalkative = TK_ERRORS;
-		}
-	}
 
 	// Try to catch cpu Frequency from /proc/cpuinfo
 	const char* cpuprefix = "cpu MHz";
@@ -178,7 +165,8 @@ int main(int argc, char* argv[])
 			while(errorCode > 1)
 			{
 				cout << "| Failed. Retrying...         |" << endl;
-				Sleep(CLIENT_WAIT_TIME_SECONDS*1000)
+				Sleep(CLIENT_WAIT_TIME_SECONDS*1000);
+			}
 
 			FILE *fileResume = fopen(sResumeFile.str().c_str(), "wb");
 			if(fileResume == NULL)
@@ -201,14 +189,9 @@ int main(int argc, char* argv[])
 
 		if((nReturn = pGenerator->CalculateTable(szFileName.str(), stWork.nChainCount, stWork.sHashRoutine, stWork.sCharset, stWork.nMinLetters, stWork.nMaxLetters, stWork.nOffset, stWork.nChainLength, stWork.nChainStart, stWork.sSalt, &Con)) != 0)
 		{
-			if(nTalkative >= TK_WARNINGS)
-				std::freopen("/dev/stdout", "w", stdout);	
 			cout << "Error id " << nReturn << " received while generating table";
 			return nReturn;
 		}
-
-		if(nTalkative >= TK_WARNINGS)
-			std::freopen("/dev/stdout", "w", stdout);	
 
 		cout << "+-----------------------------+" << endl;
 		cout << "| Uploading...                |" << endl;
