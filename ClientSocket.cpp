@@ -15,8 +15,9 @@ CClientSocket::CClientSocket(int nSocketType, int nProtocol, string szHost, int 
 	hostent *he;
 	if ((he = gethostbyname(szHost.c_str())) == 0)
 	{
-		ostringstream szError;
-		cout << "Error while trying to resolve hostname '" << szHost << "' : " << GetSocketError();
+		cout << "Connection error: ";
+		cout << GetSocketError() << endl;
+		exit(2);
 	}
 
 	sockaddr_in addr;
@@ -27,8 +28,10 @@ CClientSocket::CClientSocket(int nSocketType, int nProtocol, string szHost, int 
 
 	if (connect(rSocket, (sockaddr *) &addr, sizeof(sockaddr)) == SOCKET_ERROR)
 	{
-		ostringstream szError;
-		cout << "Error while trying to connect to '" << szHost << "' : " << GetSocketError();
+		cout << "Connection error: ";
+		cout << GetSocketError() << endl;
+		exit(2);
+
 	}
 }
 

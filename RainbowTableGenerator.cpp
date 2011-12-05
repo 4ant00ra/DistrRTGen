@@ -54,8 +54,9 @@ CRainbowTableGenerator::CRainbowTableGenerator(int nNumProcessors)
 		FILE* fileCPU = fopen("/proc/cpuinfo", "r");
 		if(fileCPU == NULL)
 		{
-			std::cout << "Unable to autodetect the processor count. Please edit distrrtgen.conf and manually set the amount of processors\n";
-			exit(-1);
+			std::cout << "| Failed to detect CPUs       |" << std::endl;
+			std::cout << "+-----------------------------+" << std::endl;
+			exit(1);
 		}
 		m_nProcessorCount = 0;
 		while(!feof(fileCPU))

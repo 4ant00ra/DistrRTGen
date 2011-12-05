@@ -14,14 +14,9 @@ CThread::~CThread(void)
 		delete Params;
 }
 
-void CThread::Stop() {
-	// set our terminate flag and let our threadProc exit naturally
+void CThread::Stop()
+{
 	bTerminateThreadFlag = true;
-
-	// Why don't we just wait here until our function finishes before we continue processing.
-	// Note: our end() function will stall the calling thread until this thread finishes executing.
-
-	// remember our waitForSingleObject function?  Let's use it here to wait for our thread to finish.
 }
 
 void StartThreadFunction(CThread* pThread)
@@ -37,7 +32,10 @@ void CThread::Start(DataGenerationThreadParameters *Parameters)
 	int nRet = pthread_create(&threadHandle, NULL, (void*(*)(void*))StartThreadFunction, (void*) this);
 	if(nRet != 0)
 	{
-		std::cout << "ERROR: pthread_create() returned " << strerror(nRet) << endl;
+		std::cout << "+-----------------------------+" << std::endl;
+		std::cout << "| Thread failed to create...  |" << std::endl;
+		std::cout << "+-----------------------------+" << std::endl;
+		exit(3);
 	}
 	pthread_detach(threadHandle);
 }

@@ -25,13 +25,6 @@
 using std::cout;
 using std::endl;
 
-enum TALKATIVE
-{
-	TK_ALL = 0,
-	TK_WARNINGS,
-	TK_ERRORS
-};
-
 CClientSocket *Con = new CClientSocket(SOCK_STREAM, 0, SERVER, PORT);
 
 void End(int nSig)
@@ -85,8 +78,9 @@ int main(int argc, char* argv[])
 
 	if (ok != 1)
 	{
-		cout << "Unable to get cpu frequency from /proc/cpuinfo." << endl;
-		exit(-1);
+		cout << "| Cannot determine frequency  |" << endl;
+		cout << "+-----------------------------+" << endl;
+		exit(1);
 	}
 
 	stWorkInfo stWork;
@@ -128,8 +122,9 @@ int main(int argc, char* argv[])
 		{
 			if( remove(cFileName) != 0 )
 			{
-				cout << "Error deleting file, please manually delete it." << endl;
-				exit(-1);
+				cout << "| Cannot delete .part file    |" << endl;
+				cout << "+-----------------------------+" << endl;
+				exit(1);
 			}
 		}
 	}
@@ -171,8 +166,9 @@ int main(int argc, char* argv[])
 			FILE *fileResume = fopen(sResumeFile.str().c_str(), "wb");
 			if(fileResume == NULL)
 			{
-				cout << "Unable to open " << sResumeFile.str() << " for writing" << endl;
-				return 1;
+				cout << "| Cannot create .resume       |" << endl;
+				cout << "+-----------------------------+" << endl;
+				exit(1);
 			}
 			fwrite(&stWork, sizeof(unsigned int), 6, fileResume); // Write the 6 unsigned ints
 			fwrite(&stWork.nChainStart, 1, 8, fileResume); // Write nChainStart uint64
@@ -189,8 +185,9 @@ int main(int argc, char* argv[])
 
 		if((nReturn = pGenerator->CalculateTable(szFileName.str(), stWork.nChainCount, stWork.sHashRoutine, stWork.sCharset, stWork.nMinLetters, stWork.nMaxLetters, stWork.nOffset, stWork.nChainLength, stWork.nChainStart, stWork.sSalt, &Con)) != 0)
 		{
-			cout << "Error id " << nReturn << " received while generating table";
-			return nReturn;
+			cout << "| Generate failed...          |" << endl;
+			cout << "+-----------------------------+" << endl;
+			exit(nReturn);
 		}
 
 		cout << "+-----------------------------+" << endl;

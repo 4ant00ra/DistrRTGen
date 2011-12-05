@@ -27,9 +27,6 @@ void CDataGenerationThread::threadProc()
 	uint64 *ptrCurrent = (uint64*)zBuffer;
 	// Make a pointer to the end of the data block.
 	uint64 *ptrEnd = (uint64*)(zBuffer + DATA_CHUNK_SIZE);
-#ifdef DEBUG
-	std::cout << "Datageneration thread started" << std::endl;
-#endif
 	uint64 nSeed = Parameters->nChainStart;	
 	while(m_nChainsCalculated < Parameters->nChainCount && bTerminateThreadFlag != 1)
 	{
@@ -53,15 +50,9 @@ void CDataGenerationThread::threadProc()
 		// The data buffer is full.. Let's swap buffers
 		if(ptrCurrent >= ptrEnd)
 		{
-#ifdef DEBUG
-			std::cout << "Data chunk finished" << std::endl;
-#endif
 			// The old buffer isn't emptied yet. So we have to wait before writing our data
 			while(bDataReady == 1 && bTerminateThreadFlag != 1)
 			{
-#ifdef DEBUG
-				std::cout << "WARNING: Data buffer is not emptied yet!" << std::endl;
-#endif
 				Sleep(1);
 			}
 			// Copy the data over
