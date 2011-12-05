@@ -30,13 +30,14 @@ class CBaseSocket
 	public:
 	std::string GetPeerName();
 	// Used to send test with
-	void operator << (std::string Line);
+	const CBaseSocket& operator << (int) const;
+	const CBaseSocket& operator << (std::string Line) const;
 	// Used to send binary data
-	void operator << (std::vector<unsigned char> Data);
+	const CBaseSocket& operator << (std::vector<unsigned char> Data) const;
 	// Used to recieve data
-	void operator >> (std::string &Line);
+	const CBaseSocket& operator >> (std::string &Line) const;
 	// Used to recieve data
-	void operator >> (std::vector<unsigned char> &Data);
+	const CBaseSocket& operator >> (std::vector<unsigned char> &Data) const;
 	std::string ReceiveBytes(void *argPtr, void (*callback)(void *arg, size_t TotalByteCount), int amountBytes);
 	void SendBytes(const char *s, int length);
 	// Used for FD_SET to return the socket

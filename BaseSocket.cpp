@@ -40,15 +40,25 @@ std::string CBaseSocket::GetPeerName()
 	return ip;
 }
 
-void CBaseSocket::operator <<(std::string Line)
+
+const CBaseSocket& CBaseSocket::operator <<(int n) const
+{
+	std::stringstream ss;
+	ss << n;
+	*this << ss.str();
+	return *this;
+}
+
+const CBaseSocket& CBaseSocket::operator <<(std::string Line) const
 {
 	if(send(rSocket, Line.c_str(), (int)Line.length(), 0) == SOCKET_ERROR)
 	{
-		std::cout << "Error while sending data: " << GetSocketError();
+		std::cout << "Error while sending data\n";
 	}
+	return *this;
 }
 
-void CBaseSocket::operator <<(std::vector<unsigned char> Data)
+const CBaseSocket& CBaseSocket::operator <<(std::vector<unsigned char> Data) const
 {
 	char *szData = new char[Data.size()];
 	unsigned int i;
@@ -60,12 +70,13 @@ void CBaseSocket::operator <<(std::vector<unsigned char> Data)
 	{
 		delete szData;
 
-		std::cout << "Error while sending data: " << GetSocketError();
+		std::cout << "Error while sending data\n";
 	}	
 	delete szData;
+	return *this;
 }
 
-void CBaseSocket::operator >>(std::string &Line)
+const CBaseSocket& CBaseSocket::operator >>(std::string &Line) const
 {
 	char buf[8096];
 	memset(buf, 0x00, sizeof(buf));
@@ -73,19 +84,20 @@ void CBaseSocket::operator >>(std::string &Line)
 	if(nBytes == SOCKET_ERROR)
 	{
 
-		std::cout << "Error while recieving data from client: " << GetSocketError();
+		std::cout << "Error while recieving data from client\n";
 	}
 	Line.assign(buf, nBytes);
+	return *this;
 }
 
-void CBaseSocket::operator >>(std::vector<unsigned char> &Data)
+const CBaseSocket& CBaseSocket::operator >>(std::vector<unsigned char> &Data) const
 {
 	u_long arg = 0;
 	while(arg == 0)
 	{
 		if (ioctl(rSocket, FIONREAD, &arg) == SOCKET_ERROR)
 		{
-			std::cout << "Error while ioctlsocket(): " << GetSocketError();
+			std::cout << "Error while ioctlsocket()\n";
 		}
 	}
 	char buf[8096];
@@ -93,12 +105,13 @@ void CBaseSocket::operator >>(std::vector<unsigned char> &Data)
 	if(nBytes == SOCKET_ERROR)
 	{
 
-		std::cout << "Error while recieving data from client: " << GetSocketError();
+		std::cout << "Error while recieving data from client\n";
 	}
 	for (int i=0; i < nBytes; i++)
 	{
 		Data.push_back(buf[i]); 	
 	}
+	return *this;
 }
 
 std::string CBaseSocket::ReceiveBytes(void *argPtr, void (*callback)(void *arg, size_t TotalByteCount), int amountBytes)

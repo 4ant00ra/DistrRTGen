@@ -58,9 +58,7 @@ void CClientSocket::Progress(void)
 
 void CClientSocket::Progress(int nPart, int nRate, int nPerc)
 {
-	std::stringstream ssData;
-	ssData << nPart << ":" << szHostname << ":" << nRate << ":" << nPerc << "\n";
-	*this << ssData.str();
+	*this << nPart << ":" << szHostname << ":" << nRate << ":" << nPerc << "\n";
 }
 
 void CClientSocket::Close(void)
