@@ -85,21 +85,25 @@ CRainbowTableGenerator::~CRainbowTableGenerator(void)
 	delete [] m_pThreads;
 }
 
-int CRainbowTableGenerator::CalculateTable(std::string sFilename, int nRainbowChainCount, std::string sHashRoutineName, std::string sCharsetName, int nPlainLenMin, int nPlainLenMax, int nRainbowTableIndex, int nRainbowChainLen, uint64 nChainStart, std::string sSalt, CClientSocket** Con)
+int CRainbowTableGenerator::CalculateTable(std::string sFilename, stWorkInfo* stWork, CClientSocket** Con)
 {
+	unsigned int nPlainLenMin 	= stWork->nMinLetters;
+	unsigned int nPlainLenMax 	= stWork->nMaxLetters;
+	unsigned int nRainbowTableIndex = stWork->nOffset;
+	unsigned int nRainbowChainLen 	= stWork->nChainLength;
+	unsigned int nRainbowChainCount	= stWork->nChainCount;
+	uint64 nChainStart		= stWork->nChainStart;
+	std::string sHashRoutineName	= stWork->sHashRoutine;
+	std::string sCharsetName	= stWork->sCharset;
+	std::string sSalt		= stWork->sSalt;
+
 	// Setup CChainWalkContext
 	if (!CChainWalkContext::SetHashRoutine(sHashRoutineName))
-	{
-		std::cout << "hash routine " << sHashRoutineName << " not supported" << std::endl;
-		return 1;
-	}
+		exit(4);
 	if (!CChainWalkContext::SetPlainCharset(sCharsetName, nPlainLenMin, nPlainLenMax))
-		return 2;
+		exit(4);
 	if (!CChainWalkContext::SetRainbowTableIndex(nRainbowTableIndex))
-	{
-		std::cout << "invalid rainbow table index " << nRainbowTableIndex << std::endl;
-		return 3;
-	}
+		exit(4);
 
 	if(sHashRoutineName == "mscache")
 	{

@@ -183,7 +183,7 @@ int main(int argc, char* argv[])
 
 		int nReturn;
 
-		if((nReturn = pGenerator->CalculateTable(szFileName.str(), stWork.nChainCount, stWork.sHashRoutine, stWork.sCharset, stWork.nMinLetters, stWork.nMaxLetters, stWork.nOffset, stWork.nChainLength, stWork.nChainStart, stWork.sSalt, &Con)) != 0)
+		if((nReturn = pGenerator->CalculateTable(szFileName.str(), &stWork, &Con)) != 0)
 		{
 			cout << "| Generate failed...          |" << endl;
 			cout << "+-----------------------------+" << endl;
