@@ -170,7 +170,7 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, stWorkInfo* st
 		m_pThreads[i]->Start(options);
 		nChainStart += 50000;
 	}
-	int nCalculatedChains = nDataLen / 16;
+	unsigned int nCalculatedChains = nDataLen / 16;
 	m_nCurrentCalculatedChains = nCalculatedChains;
 	time_t tStart = time(NULL);
 	time_t tEnd;
