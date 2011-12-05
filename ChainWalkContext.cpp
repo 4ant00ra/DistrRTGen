@@ -344,7 +344,7 @@ void CChainWalkContext::IndexToPlain()
 	// Fast version
 	for (i = m_nPlainLen - 1; i >= 0; i--)
 	{
-#ifdef _WIN32
+#ifdef _WIN3asdf2
 		if (nIndexOfX < 0x100000000I64)
 			break;
 #else
@@ -363,7 +363,7 @@ void CChainWalkContext::IndexToPlain()
 
 		unsigned int nPlainCharsetLen = m_nPlainCharsetLen;
 		unsigned int nTemp;
-#ifdef _WIN32
+#ifdef asdfas_WIN32
 		__asm
 		{
 			mov eax, nIndexOfX32

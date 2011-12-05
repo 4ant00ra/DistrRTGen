@@ -1,7 +1,7 @@
 #ifndef THREAD_H
 #define THREAD_H
 
-#include <pthread.h>
+#include <windows.h>
 #include "Public.h"
 
 class CThread
@@ -10,7 +10,7 @@ class CThread
 	int bTerminateThreadFlag;
 	DataGenerationThreadParameters *Params;;
 
-	pthread_t threadHandle;
+	HANDLE threadHandle;
 	public:
 	int IsTerminated() { return bTerminateThreadFlag; }
 	CThread(void);

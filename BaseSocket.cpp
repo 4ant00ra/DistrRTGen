@@ -5,6 +5,11 @@
 int CBaseSocket::nAmountSockets = 0;
 CBaseSocket::CBaseSocket(int nSocketType, int nProtocol)
 {
+	if(nAmountSockets == 0)
+	{
+		WSADATA info;
+		WSAStartup(MAKEWORD(2,0), &info);
+	}
 	++nAmountSockets;
 	rSocket = socket(AF_INET, nSocketType, nProtocol);
 	if(rSocket == INVALID_SOCKET)
@@ -22,7 +27,7 @@ CBaseSocket::~CBaseSocket()
 {
 	if(rSocket != INVALID_SOCKET)
 	{
-		close(rSocket);
+		closesocket(rSocket);
 	}
 	--nAmountSockets;
 }
@@ -32,7 +37,7 @@ std::string CBaseSocket::GetPeerName()
 	sockaddr_in name;
 	std::string ip;
 	int namelen = sizeof(name);
-	if(getpeername(rSocket, (sockaddr *)&name, (socklen_t *)&namelen) == SOCKET_ERROR)
+	if(getpeername(rSocket, (sockaddr *)&name, &namelen) == SOCKET_ERROR)
 	{
 		std::cout << "Error while getting peer name: " << GetSocketError();
 	}
@@ -95,7 +100,7 @@ const CBaseSocket& CBaseSocket::operator >>(std::vector<unsigned char> &Data) co
 	u_long arg = 0;
 	while(arg == 0)
 	{
-		if (ioctl(rSocket, FIONREAD, &arg) == SOCKET_ERROR)
+		if (ioctlsocket(rSocket, FIONREAD, &arg) == SOCKET_ERROR)
 		{
 			std::cout << "Error while ioctlsocket()\n";
 		}
@@ -121,7 +126,7 @@ std::string CBaseSocket::ReceiveBytes(void *argPtr, void (*callback)(void *arg, 
 	for ( ; ; )
 	{
 		u_long arg = 0;
-		if (ioctl(rSocket, FIONREAD, &arg) == SOCKET_ERROR)
+		if (ioctlsocket(rSocket, FIONREAD, &arg) == SOCKET_ERROR)
 		{
 			std::cout << "Error while running ioctl(): " << GetSocketError();
 		}

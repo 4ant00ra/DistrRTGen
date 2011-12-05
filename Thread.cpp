@@ -17,6 +17,7 @@ CThread::~CThread(void)
 void CThread::Stop()
 {
 	bTerminateThreadFlag = true;
+	WaitForSingleObject(threadHandle, INFINITE);
 }
 
 void StartThreadFunction(CThread* pThread)
@@ -29,13 +30,5 @@ void CThread::Start(DataGenerationThreadParameters *Parameters)
 		delete this->Params;
 	this->Params = Parameters;
 	this->bTerminateThreadFlag = false;
-	int nRet = pthread_create(&threadHandle, NULL, (void*(*)(void*))StartThreadFunction, (void*) this);
-	if(nRet != 0)
-	{
-		std::cout << "+-----------------------------+" << std::endl;
-		std::cout << "| Thread failed to create...  |" << std::endl;
-		std::cout << "+-----------------------------+" << std::endl;
-		exit(3);
-	}
-	pthread_detach(threadHandle);
+	threadHandle = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE) StartThreadFunction, this, NULL, NULL);
 }

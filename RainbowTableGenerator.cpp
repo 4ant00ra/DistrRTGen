@@ -1,6 +1,5 @@
 #include <iostream>
 #include <sstream>
-#include <sys/resource.h>
 #include <time.h>
 #include <zlib.h>
 
@@ -49,23 +48,9 @@ CRainbowTableGenerator::CRainbowTableGenerator(int nNumProcessors)
 	m_nCurrentCalculatedChains = 0;
 	if(nNumProcessors == 0)
 	{
-		// Get amount of logical processors in Linux
-		char cpuinfo[1024];
-		FILE* fileCPU = fopen("/proc/cpuinfo", "r");
-		if(fileCPU == NULL)
-		{
-			std::cout << "| Failed to detect CPUs       |" << std::endl;
-			std::cout << "+-----------------------------+" << std::endl;
-			exit(1);
-		}
-		m_nProcessorCount = 0;
-		while(!feof(fileCPU))
-		{
-			fgets(cpuinfo, sizeof(cpuinfo), fileCPU);
-			if(strstr(cpuinfo, "processor"))
-				m_nProcessorCount++;
-		}
-		fclose(fileCPU);
+		SYSTEM_INFO sysInfo;
+		GetSystemInfo(&sysInfo);
+		m_nProcessorCount = sysInfo.dwNumberOfProcessors;
 	}
 	else
 	{
@@ -176,7 +161,6 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, stWorkInfo* st
 	time_t tEnd;
 	int nOldCalculatedchains = GetCurrentCalculatedChains();
 	//renice main thread to +19.
-	setpriority(PRIO_PROCESS, 0, 19);
 	while(nCalculatedChains < nRainbowChainCount)
 	{
 		tEnd = time(NULL);

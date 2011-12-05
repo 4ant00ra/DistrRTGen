@@ -1,14 +1,8 @@
 #ifndef _BASESOCKET_H__
 #define _BASESOCKET_H__
 
-#include <arpa/inet.h>
-#include <errno.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/un.h>
+#include <winsock2.h>
+
 #include <vector>
 
 #ifndef INVALID_SOCKET

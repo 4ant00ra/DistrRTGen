@@ -1,16 +1,11 @@
 // rtgen_client.cpp : Defines the entry point for the console application.
 //
-#include <errno.h>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <pwd.h>
 #include <signal.h>
 #include <sstream>
 #include <stdio.h>
-#include <sys/resource.h> //renice main thread
-#include <sys/stat.h> // For mkdir()
-#include <sys/types.h>
 #include <time.h>
 
 #include "ClientSocket.h"
@@ -18,8 +13,6 @@
 #include "Public.h"
 #include "RainbowTableGenerator.h"
 
-#define CPU_INFO_FILENAME "/proc/cpuinfo"
-#define MAX_PART_SIZE 8000000 //size of PART file
 #define CLIENT_WAIT_TIME_SECONDS 60 // Wait 10 min and try again
 #define VERSION "1.0"
 using std::cout;
@@ -42,47 +35,7 @@ int main(int argc, char* argv[])
 	std::string sHomedir;
 	int nNumProcessors = 0;
 
-	// Try to catch cpu Frequency from /proc/cpuinfo
-	const char* cpuprefix = "cpu MHz";
-	FILE* F;
-	char cpuline[300+1];
-	char* pos;
-	int ok = 0;
-
-	nNumProcessors = 0;
-
-	signal(SIGINT, &End);
-
-	// open cpuinfo system file
-	F = fopen(CPU_INFO_FILENAME,"r");
-	if (!F) return 0;
-
-	//read lines
-	while (!feof(F))
-	{
-		fgets (cpuline, sizeof(cpuline), F);
-		// test if it's the frequency line
-		if (!strncmp(cpuline, cpuprefix, strlen(cpuprefix)))
-		{
-			// Yes, grep the frequency
-			pos = strrchr (cpuline, ':') +2;
-			if (!pos) break;
-			if (pos[strlen(pos)-1] == '\n') pos[strlen(pos)-1] = '\0';
-			strcpy (cpuline, pos);
-			strcat (cpuline,"e6");
-			nFrequency = atof (cpuline)/1000000;
-			ok = 1;
-		}
-	}
-	nNumProcessors = sysconf(_SC_NPROCESSORS_ONLN);
-
-	if (ok != 1)
-	{
-		cout << "| Cannot determine frequency  |" << endl;
-		cout << "+-----------------------------+" << endl;
-		exit(1);
-	}
-
+	nFrequency = 0;
 	stWorkInfo stWork;
 
 	// Check to see if there is something to resume from
@@ -139,17 +92,11 @@ int main(int argc, char* argv[])
 	cout.width(28);
 	cout << left << "| Processors: ";
 	cout << right << pGenerator->GetProcessorCount() << " |" << endl;
-	cout.fill(' ');
-	cout.width(25);
-	cout << left << "| Frequency: ";
-	cout << right << (int)nFrequency << " |" << endl;
 	cout << "+" << string(29,'-') << "+" << endl; // 24 Chars
 
 
 	while(1)
 	{
-		//renice main thread to 0.
-		setpriority(PRIO_PROCESS, 0, 0);
 		// If there is no work to do, request some!
 		if(stWork.sCharset == "")
 		{
