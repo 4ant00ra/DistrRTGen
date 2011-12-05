@@ -33,6 +33,8 @@ CClientSocket::CClientSocket(int nSocketType, int nProtocol, string szHost, int 
 		exit(2);
 
 	}
+
+	isProg = false;
 }
 
 int CClientSocket::RequestWork(stWorkInfo* Work)
@@ -60,6 +62,7 @@ int CClientSocket::RequestWork(stWorkInfo* Work)
 
 void CClientSocket::Progress(void)
 {
+	isProg = true;
 	*this << "progress\n";
 }
 
@@ -70,8 +73,10 @@ void CClientSocket::Progress(int nPart, int nRate, int nPerc)
 
 void CClientSocket::Close(void)
 {
-	*this << "done\n";
+	if(isProg)
+		*this << "done\n";
 	*this << "quit\n";
+	isProg = false;
 }
 
 int CClientSocket::SendFinishedWork(string filename)
