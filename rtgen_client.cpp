@@ -24,7 +24,7 @@
 #include "Public.h"
 #include "RainbowTableGenerator.h"
 
-#define CLIENT_WAIT_TIME_SECONDS 60
+#define CLIENT_WAIT_TIME_SECONDS 5
 #define VERSION "1.0"
 using std::cout;
 using std::endl;
@@ -168,10 +168,11 @@ int main(int argc, char* argv[])
 			cout << "| Requesting work...          |" << endl;
 			int errorCode = Con->RequestWork(&stWork);
 
-			while(errorCode > 1)
+			while(errorCode > 0)
 			{
 				cout << "| No work. Retrying...        |" << endl;
 				Sleep(CLIENT_WAIT_TIME_SECONDS*1000);
+				errorCode = Con->RequestWork(&stWork);
 			}
 
 			FILE *fileResume = fopen(sResumeFile.str().c_str(), "wb");
@@ -200,6 +201,7 @@ int main(int argc, char* argv[])
 			cout << "+-----------------------------+" << endl;
 			exit(nReturn);
 		}
+		szFileName << ".zip";
 
 		cout << "+-----------------------------+" << endl;
 		cout << "| Uploading...                |" << endl;
@@ -212,16 +214,16 @@ int main(int argc, char* argv[])
 			if(nResult == 0)
 			{
 				cout << "| Success!                    |" << endl;
-				remove(szFileName.str().c_str());		
+				remove(szFileName.str().c_str());
+				remove(szFileName.str().substr(0, szFileName.str().size()-4).c_str());
 				stWork.sCharset = ""; // Blank out the charset to indicate the work is complete
-				unlink(sResumeFile.str().c_str());
 			}
 			else if(nResult == 1)
 			{
 				cout << "| Server reassigned part      |" << endl;
 				remove(szFileName.str().c_str());
+				remove(szFileName.str().substr(0, szFileName.str().size()-4).c_str());
 				stWork.sCharset = ""; // Blank out the charset to indicate the work is complete
-				unlink(sResumeFile.str().c_str());
 			}
 			else
 			{

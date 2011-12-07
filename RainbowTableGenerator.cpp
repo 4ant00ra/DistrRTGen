@@ -278,5 +278,7 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, stWorkInfo* st
 	fwrite(buffer, 1, len, zipFile);
 	fclose(zipFile);
 	// Done sorting*/
+	
+	(*Con)->Done();
 	return 0;
 }

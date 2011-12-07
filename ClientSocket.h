@@ -18,6 +18,7 @@ class CClientSocket :
 		void Progress(void);
 		void Progress(int,int,int);
 		std::string GetWork(void);
+		void Done(void);
 		void Close(void);
 		int SendFinishedWork(std::string);
 		int RequestWork(stWorkInfo*);

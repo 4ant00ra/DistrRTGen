@@ -44,7 +44,7 @@ int CClientSocket::RequestWork(stWorkInfo* Work)
 	*this << "work\n";
 	*this >> info;
 
-	if (info.compare("GDB") == 0)
+	if(info.compare("GDB\n") == 0)
 		return 1;
 	getNext(line,info);
 
@@ -73,6 +73,11 @@ void CClientSocket::Progress(int nPart, int nRate, int nPerc)
 	*this << nPart << ":" << szHostname << ":" << nRate << ":" << nPerc << "\n";
 }
 
+void CClientSocket::Done(void)
+{
+	*this << "done\n";
+}
+
 void CClientSocket::Close(void)
 {
 	if(isProg)
@@ -83,7 +88,6 @@ void CClientSocket::Close(void)
 
 int CClientSocket::SendFinishedWork(string filename)
 {
-	filename.append(".zip");
         typedef istream_iterator<char> istream_iterator;
         ifstream file(filename.c_str(), ifstream::binary);
         vector<unsigned char> input;

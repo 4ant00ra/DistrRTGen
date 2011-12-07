@@ -18,7 +18,6 @@ CDataGenerationThread::~CDataGenerationThread(void)
 
 void CDataGenerationThread::threadProc()
 {
-	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_IDLE);
 	#ifdef WIN32
 	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_IDLE);
 	#else
