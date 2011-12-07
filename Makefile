@@ -15,18 +15,18 @@ PROFILE        := NO
 
 #****************************************************************************
 
-CC     := gcc
-CXX    := g++
-LD     := g++
+CC     := i686-pc-mingw32-gcc
+CXX    := i686-pc-mingw32-g++
+LD     := i686-pc-mingw32-g++
 AR     := ar rc
-RANLIB := ranlib
+RANLIB := i686-pc-mingw32-ranlib
 
 PREFIX?  := /usr/local/bin
 
 DEBUG_CFLAGS     :=  -D_FAST_HASH_ -D_FILE_OFFSET_BITS=64 -Wall -Wno-format -g -DDEBUG
 RELEASE_CFLAGS   :=  -D_FAST_MD5_ -D_FAST_HASH_ -D_FILE_OFFSET_BITS=64 -Wno-unknown-pragmas -Wno-format -march=native -O2
 
-LIBS		 := -lz -lcrypto -lpthread
+LIBS		 := -lws2_32 -lcrypto -lgdi32 -lz -static
 
 DEBUG_CXXFLAGS   := ${DEBUG_CFLAGS} 
 RELEASE_CXXFLAGS := ${RELEASE_CFLAGS}
@@ -68,7 +68,7 @@ CXXFLAGS := ${CXXFLAGS} ${DEFS}
 # Targets of the build
 #****************************************************************************
 
-OUTPUT := rtcrack
+OUTPUT := rtcrack.exe
 
 all: ${OUTPUT}
 
