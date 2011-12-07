@@ -19,7 +19,11 @@ using namespace std;
 #define MAX_PLAIN_LEN 256
 #define MAX_SALT_LEN  256
 #define MIN_HASH_LEN  8
+#ifdef WIN32
+#define uint64 unsigned __int64
+#else
 #define uint64 u_int64_t
+#endif
 
 typedef struct
 {

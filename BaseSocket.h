@@ -1,6 +1,9 @@
 #ifndef _BASESOCKET_H__
 #define _BASESOCKET_H__
 
+#ifdef WIN32
+#include <winsock2.h>
+#else
 #include <arpa/inet.h>
 #include <errno.h>
 #include <netdb.h>
@@ -9,6 +12,8 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/un.h>
+#endif
+
 #include <vector>
 
 #ifndef INVALID_SOCKET

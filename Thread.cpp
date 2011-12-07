@@ -17,6 +17,9 @@ CThread::~CThread(void)
 void CThread::Stop()
 {
 	bTerminateThreadFlag = true;
+	#ifdef WIN32
+	WaitForSingleObject(threadHandle, INFINITE);
+	#endif
 }
 
 void StartThreadFunction(CThread* pThread)
@@ -29,6 +32,9 @@ void CThread::Start(DataGenerationThreadParameters *Parameters)
 		delete this->Params;
 	this->Params = Parameters;
 	this->bTerminateThreadFlag = false;
+	#ifdef WIN32
+	threadHandle = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE) StartThreadFunction, this, NULL, NULL);
+	#else
 	int nRet = pthread_create(&threadHandle, NULL, (void*(*)(void*))StartThreadFunction, (void*) this);
 	if(nRet != 0)
 	{
@@ -38,4 +44,5 @@ void CThread::Start(DataGenerationThreadParameters *Parameters)
 		exit(3);
 	}
 	pthread_detach(threadHandle);
+	#endif
 }

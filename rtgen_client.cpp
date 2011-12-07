@@ -1,26 +1,30 @@
 // rtgen_client.cpp : Defines the entry point for the console application.
 //
-#include <errno.h>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <pwd.h>
 #include <signal.h>
 #include <sstream>
 #include <stdio.h>
-#include <sys/resource.h> //renice main thread
-#include <sys/stat.h> // For mkdir()
-#include <sys/types.h>
 #include <time.h>
+
+#ifndef WIN32
+#include <errno.h>
+#include <pwd.h>
+#include <sys/resource.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#define CPU_INFO_FILENAME "/proc/cpuinfo"
+#define MAX_PART_SIZE 8000000
+#endif
 
 #include "ClientSocket.h"
 #include "config.h"
 #include "Public.h"
 #include "RainbowTableGenerator.h"
 
-#define CPU_INFO_FILENAME "/proc/cpuinfo"
-#define MAX_PART_SIZE 8000000 //size of PART file
-#define CLIENT_WAIT_TIME_SECONDS 60 // Wait 10 min and try again
+#define CLIENT_WAIT_TIME_SECONDS 60
 #define VERSION "1.0"
 using std::cout;
 using std::endl;
@@ -41,7 +45,9 @@ int main(int argc, char* argv[])
 	double nFrequency;
 	std::string sHomedir;
 	int nNumProcessors = 0;
-
+	
+	nFrequency = 0;
+	#ifndef WIN32
 	// Try to catch cpu Frequency from /proc/cpuinfo
 	const char* cpuprefix = "cpu MHz";
 	FILE* F;
@@ -80,8 +86,9 @@ int main(int argc, char* argv[])
 	{
 		cout << "| Cannot determine frequency  |" << endl;
 		cout << "+-----------------------------+" << endl;
-		exit(1);
+		nFrequency = 0;
 	}
+	#endif
 
 	stWorkInfo stWork;
 
@@ -139,17 +146,21 @@ int main(int argc, char* argv[])
 	cout.width(28);
 	cout << left << "| Processors: ";
 	cout << right << pGenerator->GetProcessorCount() << " |" << endl;
+	#ifndef WIN32
 	cout.fill(' ');
 	cout.width(25);
 	cout << left << "| Frequency: ";
 	cout << right << (int)nFrequency << " |" << endl;
+	#endif
 	cout << "+" << string(29,'-') << "+" << endl; // 24 Chars
 
 
 	while(1)
 	{
+		#ifndef WIN32
 		//renice main thread to 0.
 		setpriority(PRIO_PROCESS, 0, 0);
+		#endif
 		// If there is no work to do, request some!
 		if(stWork.sCharset == "")
 		{

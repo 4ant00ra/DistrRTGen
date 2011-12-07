@@ -344,13 +344,8 @@ void CChainWalkContext::IndexToPlain()
 	// Fast version
 	for (i = m_nPlainLen - 1; i >= 0; i--)
 	{
-#ifdef _WIN32
-		if (nIndexOfX < 0x100000000I64)
-			break;
-#else
 		if (nIndexOfX < 0x100000000llu)
 			break;
-#endif
 
 		m_Plain[i] = m_PlainCharset[nIndexOfX % m_nPlainCharsetLen];
 		nIndexOfX /= m_nPlainCharsetLen;
@@ -363,16 +358,6 @@ void CChainWalkContext::IndexToPlain()
 
 		unsigned int nPlainCharsetLen = m_nPlainCharsetLen;
 		unsigned int nTemp;
-#ifdef _WIN32
-		__asm
-		{
-			mov eax, nIndexOfX32
-				xor edx, edx
-				div nPlainCharsetLen
-				mov nIndexOfX32, eax
-				mov nTemp, edx
-		}
-#else
 		__asm__ __volatile__ (	"mov %2, %%eax;"
 				"xor %%edx, %%edx;"
 				"divl %3;"
@@ -382,7 +367,6 @@ void CChainWalkContext::IndexToPlain()
 				: "m"(nIndexOfX32), "m"(nPlainCharsetLen)
 				: "%eax", "%edx"
 				);
-#endif
 		m_Plain[i] = m_PlainCharset[nTemp];
 	}
 }

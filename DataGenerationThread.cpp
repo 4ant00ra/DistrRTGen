@@ -19,7 +19,11 @@ CDataGenerationThread::~CDataGenerationThread(void)
 void CDataGenerationThread::threadProc()
 {
 	//child thread nice value
+	#ifdef WIN32
+	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_IDLE);
+	#else
 	nice(16);
+	#endif
 
 	const DataGenerationThreadParameters *Parameters = (const DataGenerationThreadParameters *)Params;
 	CChainWalkContext cwc;
