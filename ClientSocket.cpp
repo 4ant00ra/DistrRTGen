@@ -44,6 +44,8 @@ int CClientSocket::RequestWork(stWorkInfo* Work)
 	*this << "work\n";
 	*this >> info;
 
+	if (info.compare("GDB") == 0)
+		return 1;
 	getNext(line,info);
 
 	Work->nPartID = ston(line[0]);

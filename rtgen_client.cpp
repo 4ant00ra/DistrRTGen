@@ -170,7 +170,7 @@ int main(int argc, char* argv[])
 
 			while(errorCode > 1)
 			{
-				cout << "| Failed. Retrying...         |" << endl;
+				cout << "| No work. Retrying...        |" << endl;
 				Sleep(CLIENT_WAIT_TIME_SECONDS*1000);
 			}
 
