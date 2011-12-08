@@ -76,14 +76,19 @@ void CClientSocket::Progress(int nPart, int nRate, int nPerc)
 void CClientSocket::Done(void)
 {
 	*this << "done\n";
+	isProg = false;
 }
 
 void CClientSocket::Close(void)
 {
 	if(isProg)
-		*this << "done\n";
+		this->Done();
 	*this << "quit\n";
-	isProg = false;
+}
+
+void CClientSocket::Abort(void)
+{
+	*this << "abort\n";
 }
 
 int CClientSocket::SendFinishedWork(string filename)
@@ -94,6 +99,14 @@ int CClientSocket::SendFinishedWork(string filename)
 
         file >> noskipws;
         copy(istream_iterator(file), istream_iterator(), back_inserter(input));
+
+	string response = "no";
+	stringstream size;
+	size << input.size() << "\n";
+	*this << size.str();
+	
+	*this >> response;
+
 	*this << input;
 	return 0;
 }

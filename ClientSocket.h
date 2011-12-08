@@ -20,6 +20,7 @@ class CClientSocket :
 		std::string GetWork(void);
 		void Done(void);
 		void Close(void);
+		void Abort(void);
 		int SendFinishedWork(std::string);
 		int RequestWork(stWorkInfo*);
 };

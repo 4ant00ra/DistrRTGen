@@ -35,7 +35,7 @@ void End(int nSig)
 {
 	cout << endl;
 	cout << "+-----------------------------+\n";
-	Con->Close();
+	Con->Abort();
 	exit(-1);
 }
 
