@@ -253,7 +253,7 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, stWorkInfo* st
 		}
 
 	}
-	std::cout << std::endl;
+	std::cout << "\r| [====================] 100% |\n";
 	// Stop the threads again and destroy them
 	for(int i = 0; i < m_nProcessorCount; i++)
 	{
