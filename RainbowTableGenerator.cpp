@@ -278,7 +278,10 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, stWorkInfo* st
 	fwrite(buffer, 1, len, zipFile);
 	fclose(zipFile);
 	// Done sorting*/
-	
+
+	// De-allocate memory ;)
+	delete[] chains;
+	delete[] buffer;	
 	(*Con)->Done();
 	return 0;
 }

@@ -19,6 +19,8 @@ void CThread::Stop()
 	bTerminateThreadFlag = true;
 	#ifdef WIN32
 	WaitForSingleObject(threadHandle, INFINITE);
+	#else
+	pthread_join(threadHandle, NULL);
 	#endif
 }
 
@@ -43,6 +45,5 @@ void CThread::Start(DataGenerationThreadParameters *Parameters)
 		std::cout << "+-----------------------------+" << std::endl;
 		exit(3);
 	}
-	pthread_detach(threadHandle);
 	#endif
 }
