@@ -190,11 +190,11 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, stWorkInfo* st
 	while(nCalculatedChains < nRainbowChainCount)
 	{
 		tEnd = time(NULL);
-		if(tEnd - tStart > 0.1)
+		if(tEnd - tStart > 1)
 		{
 
 			int nPercent = ((float)nCalculatedChains / (float)nRainbowChainCount) * 100;
-			int nRate = (GetCurrentCalculatedChains() - nOldCalculatedchains) / 0.1;
+			int nRate = (GetCurrentCalculatedChains() - nOldCalculatedchains) / (tEnd - tStart);
 
 			// Display
 			std::cout << "\r";
@@ -211,7 +211,7 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, stWorkInfo* st
 			std::cout.flush();
 
 
-			(*Con)->Progress(ston(sFilename),nRate,nPercent);
+			(*Con)->Progress(ston(sFilename),nRate*nRainbowChainLen,nPercent);
 			nOldCalculatedchains = m_nCurrentCalculatedChains;
 			tStart = time(NULL);
 		}
@@ -269,11 +269,11 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, stWorkInfo* st
 	fread(chains, 16, nRainbowChainCount, partFile);
 	fclose(partFile);
 
-	QuickSort(chains, 0, nRainbowChainCount - 1);
+	//QuickSort(chains, 0, nRainbowChainCount - 1);
 
-	uLongf len = nRainbowChainCount*1.1+12;
+	uLongf len = compressBound(nRainbowChainCount * 16);
 	unsigned char *buffer = new unsigned char[len];
-	compress((Bytef *)buffer, &len, (Bytef *)chains, nRainbowChainCount * 16);
+	compress2((Bytef *)buffer, &len, (Bytef *)chains, nRainbowChainCount * 16, 9);
 	FILE *zipFile = fopen(sFilename.append(".zip").c_str(), "wb");
 	fwrite(buffer, 1, len, zipFile);
 	fclose(zipFile);
