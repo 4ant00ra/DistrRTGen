@@ -29,7 +29,7 @@
 using std::cout;
 using std::endl;
 
-CClientSocket *Con = new CClientSocket(SOCK_STREAM, 0, SERVER, PORT);
+CClientSocket *Con = new CClientSocket(SOCK_STREAM, 0);
 
 void End(int nSig)
 {
@@ -84,12 +84,14 @@ int main(int argc, char* argv[])
 
 	if (ok != 1)
 	{
+		cout << "+-----------------------------+" << endl;
 		cout << "| Cannot determine frequency  |" << endl;
 		cout << "+-----------------------------+" << endl;
 		nFrequency = 0;
 	}
 	#endif
 
+	
 	stWorkInfo stWork;
 
 	// Check to see if there is something to resume from
@@ -154,6 +156,13 @@ int main(int argc, char* argv[])
 	#endif
 	cout << "+" << string(29,'-') << "+" << endl; // 24 Chars
 
+	while(Con->Connect(SERVER, PORT) != 0)
+	{
+		cout << "| Cannot connect... Retrying  |" << endl;
+		delete Con;
+		Sleep(5000);
+		Con = new CClientSocket(SOCK_STREAM, 0);
+	}
 
 	while(1)
 	{

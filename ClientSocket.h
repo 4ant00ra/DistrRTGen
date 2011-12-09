@@ -14,7 +14,8 @@ class CClientSocket :
 		bool isProg;
 	public:
 		CClientSocket(void);
-		CClientSocket(int, int, std::string, int);
+		CClientSocket(int, int);
+		int Connect(std::string, int);
 		void Progress(void);
 		void Progress(int,int,int);
 		std::string GetWork(void);

@@ -7,7 +7,12 @@
 #include "ClientSocket.h"
 using namespace std;
 
-CClientSocket::CClientSocket(int nSocketType, int nProtocol, string szHost, int nPort) : CBaseSocket(nSocketType, nProtocol)
+CClientSocket::CClientSocket(int nSocketType, int nProtocol) : CBaseSocket(nSocketType, nProtocol)
+{
+
+}
+
+int CClientSocket::Connect(string szHost, int nPort)
 {
 	gethostname(szHostname, 64);
 	string error;
@@ -26,17 +31,12 @@ CClientSocket::CClientSocket(int nSocketType, int nProtocol, string szHost, int 
 	addr.sin_addr = *((in_addr *)he->h_addr);
 	memset(&(addr.sin_zero), 0, 8);
 
-	if (connect(rSocket, (sockaddr *) &addr, sizeof(sockaddr)) == SOCKET_ERROR)
-	{
-		cout << "Connection error: ";
-		cout << GetSocketError() << endl;
-		exit(2);
-
-	}
+	int ret = connect(rSocket, (sockaddr *) &addr, sizeof(sockaddr));
 
 	isProg = false;
-}
 
+	return ret;
+}
 int CClientSocket::RequestWork(stWorkInfo* Work)
 {
 	string line[10];
