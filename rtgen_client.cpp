@@ -41,13 +41,30 @@ void End(int nSig)
 
 int main(int argc, char* argv[])
 {
+	signal(SIGINT, &End);
+	
 	int nResult;
 	double nFrequency;
 	std::string sHomedir;
 	int nNumProcessors = 0;
 	
 	nFrequency = 0;
-	#ifndef WIN32
+	#ifdef WIN32
+	string sMHz;
+	char buffer[_MAX_PATH];
+	DWORD BufSize = _MAX_PATH;
+	DWORD dwMHz = _MAX_PATH;
+	HKEY hKey;
+
+	long lError = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+			"HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0",
+			0,
+			KEY_READ,
+			&hKey);
+	RegQueryValueEx(hKey, "~MHz", NULL, NULL, (LPBYTE) &dwMHz, &BufSize);
+	wsprintf(buffer, "%d", dwMHz);
+	nFrequency = ston(buffer);
+	#else
 	// Try to catch cpu Frequency from /proc/cpuinfo
 	const char* cpuprefix = "cpu MHz";
 	FILE* F;
@@ -56,8 +73,6 @@ int main(int argc, char* argv[])
 	int ok = 0;
 
 	nNumProcessors = 0;
-
-	signal(SIGINT, &End);
 
 	// open cpuinfo system file
 	F = fopen(CPU_INFO_FILENAME,"r");
@@ -148,12 +163,10 @@ int main(int argc, char* argv[])
 	cout.width(28);
 	cout << left << "| Processors: ";
 	cout << right << pGenerator->GetProcessorCount() << " |" << endl;
-	#ifndef WIN32
 	cout.fill(' ');
 	cout.width(25);
 	cout << left << "| Frequency: ";
 	cout << right << (int)nFrequency << " |" << endl;
-	#endif
 	cout << "+" << string(29,'-') << "+" << endl; // 24 Chars
 
 	while(Con->Connect(SERVER, PORT) != 0)
