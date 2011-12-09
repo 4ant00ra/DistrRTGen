@@ -269,7 +269,7 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, stWorkInfo* st
 	fread(chains, 16, nRainbowChainCount, partFile);
 	fclose(partFile);
 
-	//QuickSort(chains, 0, nRainbowChainCount - 1);
+	QuickSort(chains, 0, nRainbowChainCount - 1);
 
 	uLongf len = compressBound(nRainbowChainCount * 16);
 	unsigned char *buffer = new unsigned char[len];
