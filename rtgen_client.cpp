@@ -208,7 +208,7 @@ int main(int argc, char* argv[])
 
 
 		nResult = -1;
-		while(nResult != 0 && nResult != 1)
+		while(nResult != 0)
 		{
 			int nResult = Con->SendFinishedWork(szFileName.str());
 			if(nResult == 0)
@@ -216,13 +216,7 @@ int main(int argc, char* argv[])
 				cout << "| Success!                    |" << endl;
 				remove(szFileName.str().c_str());
 				remove(szFileName.str().substr(0, szFileName.str().size()-4).c_str());
-				stWork.sCharset = ""; // Blank out the charset to indicate the work is complete
-			}
-			else if(nResult == 1)
-			{
-				cout << "| Server reassigned part      |" << endl;
-				remove(szFileName.str().c_str());
-				remove(szFileName.str().substr(0, szFileName.str().size()-4).c_str());
+				remove(".resume");
 				stWork.sCharset = ""; // Blank out the charset to indicate the work is complete
 			}
 			else
@@ -230,7 +224,6 @@ int main(int argc, char* argv[])
 				cout << "| Failure... Retrying         |" << endl;
 				Sleep(CLIENT_WAIT_TIME_SECONDS * 1000);
 			}
-			break;
 		}
 
 		cout << "+-----------------------------+" << endl;
