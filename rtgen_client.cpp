@@ -219,7 +219,7 @@ int main(int argc, char* argv[])
 		nResult = -1;
 		while(nResult != 0)
 		{
-			int nResult = Con->SendFinishedWork(szFileName.str());
+			nResult = Con->SendFinishedWork(szFileName.str());
 			if(nResult == 0)
 			{
 				cout << "| Success!                    |" << endl;
