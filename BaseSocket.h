@@ -26,6 +26,8 @@
 
 #define SOCKET int
 
+extern bool verbose;
+
 class CBaseSocket
 {
 	public:

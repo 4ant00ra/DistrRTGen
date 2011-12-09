@@ -7,9 +7,12 @@
 #include "ClientSocket.h"
 using namespace std;
 
+extern bool verbose;
+
 CClientSocket::CClientSocket(int nSocketType, int nProtocol) : CBaseSocket(nSocketType, nProtocol)
 {
-
+	if(verbose)
+		cout << "| Creating Client socket      |" << endl;
 }
 
 int CClientSocket::Connect(string szHost, int nPort)

@@ -29,6 +29,11 @@
 using std::cout;
 using std::endl;
 
+// Use global booleans
+bool debug = false;
+bool tunnel = false;
+bool verbose = false;
+
 CClientSocket *Con = new CClientSocket(SOCK_STREAM, 0);
 
 void End(int nSig)
@@ -46,10 +51,53 @@ int main(int argc, char* argv[])
 	int nResult;
 	double nFrequency;
 	std::string sHomedir;
+	std::string szServer = "all.stdover.org";
 	int nNumProcessors = 0;
-	
+
+	if(argc > 1)
+	{
+		for(int i=1; i < argc; i++)
+		{
+			if(!strcmp(argv[i], "-d") || !strcmp(argv[i], "--debug"))
+			{
+				debug = true;
+			}
+
+			else if(!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help"))
+			{
+				cout << "Usage: " << argv[0] << " [OPTION]" << endl;
+				cout << "Generate a piece of a Rainbow Table" << endl;
+				cout << "-d, --debug	turn on debugging settings " << endl;
+				cout << "-h, --help	display this screen" << endl;
+				cout << "-t, --tunnel	connect to localhost" << endl;
+				cout << "-v, --verbose	verbose output mode" << endl;
+				cout << endl;
+				exit(0);
+			}
+			else if(!strcmp(argv[i], "-t") || !strcmp(argv[i], "--tunnel"))
+			{
+				tunnel = true;
+				szServer = "localhost";
+			}
+			else if(!strcmp(argv[i], "-v") || !strcmp(argv[i], "--verbose"))
+			{
+				verbose = true;
+			}
+
+			else
+			{
+				cout << "Ignoring unknown flag " << argv[i] << endl;
+			}
+		}
+	}
+
+	cout << "+" << string(29,'-') << "+" << endl; // 24 Chars
+	cout << "|     Starting RTCrack " << VERSION << "    |" << endl;
+
 	nFrequency = 0;
 	#ifdef WIN32
+	if(verbose)
+		cout << "| Windows client detected     |" << endl;
 	string sMHz;
 	char buffer[_MAX_PATH];
 	DWORD BufSize = _MAX_PATH;
@@ -65,7 +113,8 @@ int main(int argc, char* argv[])
 	wsprintf(buffer, "%d", dwMHz);
 	nFrequency = ston(buffer);
 	#else
-	// Try to catch cpu Frequency from /proc/cpuinfo
+	if(verbose)
+		cout << "| Linux client detected       | " << endl;
 	const char* cpuprefix = "cpu MHz";
 	FILE* F;
 	char cpuline[300+1];
@@ -74,7 +123,6 @@ int main(int argc, char* argv[])
 
 	nNumProcessors = 0;
 
-	// open cpuinfo system file
 	F = fopen(CPU_INFO_FILENAME,"r");
 	if (!F) return 0;
 
@@ -99,7 +147,6 @@ int main(int argc, char* argv[])
 
 	if (ok != 1)
 	{
-		cout << "+-----------------------------+" << endl;
 		cout << "| Cannot determine frequency  |" << endl;
 		cout << "+-----------------------------+" << endl;
 		nFrequency = 0;
@@ -115,6 +162,8 @@ int main(int argc, char* argv[])
 	FILE *file = fopen(sResumeFile.str().c_str(), "rb");
 	if(file != NULL)
 	{
+		if(verbose)
+			cout << "| Resume file found!          |" << endl;
 		// Bingo.. There is a resume file.
 		fread(&stWork, sizeof(unsigned int), 6, file);
 		fread(&stWork.nChainStart, sizeof(uint64), 1, file);
@@ -144,6 +193,8 @@ int main(int argc, char* argv[])
 		FILE *partfile = fopen(cFileName,"rb");
 		if(partfile != NULL)
 		{
+			if(verbose)
+				cout << "| Removing previous work      | " << endl;
 			if( remove(cFileName) != 0 )
 			{
 				cout << "| Cannot delete .part file    |" << endl;
@@ -157,8 +208,6 @@ int main(int argc, char* argv[])
 	CRainbowTableGenerator *pGenerator = new CRainbowTableGenerator(nNumProcessors);
 	//	          1          2
 	//       123456789012345667890123
-	cout << "+" << string(29,'-') << "+" << endl; // 24 Chars
-	cout << "|     Starting RTCrack " << VERSION << "    |" << endl;
 	cout.fill(' ');
 	cout.width(28);
 	cout << left << "| Processors: ";
@@ -169,7 +218,7 @@ int main(int argc, char* argv[])
 	cout << right << (int)nFrequency << " |" << endl;
 	cout << "+" << string(29,'-') << "+" << endl; // 24 Chars
 
-	while(Con->Connect(SERVER, PORT) != 0)
+	while(Con->Connect(szServer, PORT) != 0)
 	{
 		cout << "| Cannot connect... Retrying  |" << endl;
 		delete Con;
@@ -236,9 +285,12 @@ int main(int argc, char* argv[])
 			if(nResult == 0)
 			{
 				cout << "| Success!                    |" << endl;
-				remove(szFileName.str().c_str());
-				remove(szFileName.str().substr(0, szFileName.str().size()-4).c_str());
-				remove(".resume");
+				if(!debug)
+				{
+					remove(szFileName.str().c_str());
+					remove(szFileName.str().substr(0, szFileName.str().size()-4).c_str());
+					remove(".resume");
+				}
 				stWork.sCharset = ""; // Blank out the charset to indicate the work is complete
 			}
 			else

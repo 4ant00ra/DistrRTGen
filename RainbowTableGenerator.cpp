@@ -10,6 +10,7 @@
 #include "ChainWalkContext.h"
 #include "RainbowTableGenerator.h"
 
+extern bool debug;
 
 int QuickSortPartition(RainbowChain* pChain, int nLow, int nHigh)
 {
@@ -197,7 +198,10 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, stWorkInfo* st
 			int nRate = (GetCurrentCalculatedChains() - nOldCalculatedchains) / (tEnd - tStart);
 
 			// Display
-			std::cout << "\r";
+			if(verbose)
+				std::cout << "\n";
+			else
+				std::cout << "\r";
 			std::cout << "| [";
 			std::cout << string((int)nPercent/5,'=');
 			if(nPercent%5 > 2)
@@ -209,7 +213,7 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, stWorkInfo* st
 			std::cout << nPercent;
 			std::cout << "% |";
 			std::cout.flush();
-
+		
 
 			(*Con)->Progress(ston(sFilename),nRate*nRainbowChainLen,nPercent);
 			nOldCalculatedchains = m_nCurrentCalculatedChains;
@@ -269,7 +273,8 @@ int CRainbowTableGenerator::CalculateTable(std::string sFilename, stWorkInfo* st
 	fread(chains, 16, nRainbowChainCount, partFile);
 	fclose(partFile);
 
-	QuickSort(chains, 0, nRainbowChainCount - 1);
+	if(!debug)
+		QuickSort(chains, 0, nRainbowChainCount - 1);
 
 	uLongf len = compressBound(nRainbowChainCount * 16);
 	unsigned char *buffer = new unsigned char[len];

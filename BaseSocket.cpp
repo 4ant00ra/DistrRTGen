@@ -1,16 +1,24 @@
 #include <iostream>
 #include <sstream>
 #include "BaseSocket.h"
+using namespace std;
 
 int CBaseSocket::nAmountSockets = 0;
 CBaseSocket::CBaseSocket(int nSocketType, int nProtocol)
 {
+	if(verbose)
+		cout << "| Creating new socket         |" << endl;
 	#ifdef WIN32
+	if(verbose)
+		cout << "| Windows socket type used    |" << endl;
 	if(nAmountSockets == 0)
 	{
 		WSADATA info;
 		WSAStartup(MAKEWORD(2,0), &info);
 	}
+	#else
+	if(verbose)
+		cout << "| Unix socket type used       |" << endl;
 	#endif
 	++nAmountSockets;
 	rSocket = socket(AF_INET, nSocketType, nProtocol);
@@ -27,6 +35,8 @@ CBaseSocket::CBaseSocket(SOCKET rNewSocket)
 }
 CBaseSocket::~CBaseSocket()
 {
+	if(verbose)
+		cout << "| Destroying socket           |" << endl;
 	if(rSocket != INVALID_SOCKET)
 	{
 		#ifdef WIN32
@@ -40,6 +50,8 @@ CBaseSocket::~CBaseSocket()
 
 std::string CBaseSocket::GetPeerName()
 {
+	if(verbose)
+		cout << "| Resolving hostname          |" << endl;
 	sockaddr_in name;
 	std::string ip;
 	int namelen = sizeof(name);
@@ -58,6 +70,8 @@ std::string CBaseSocket::GetPeerName()
 
 const CBaseSocket& CBaseSocket::operator <<(int n) const
 {
+	if(verbose)
+		cout << "| Sending integer data        |" << endl;
 	std::stringstream ss;
 	ss << n;
 	*this << ss.str();
@@ -66,6 +80,8 @@ const CBaseSocket& CBaseSocket::operator <<(int n) const
 
 const CBaseSocket& CBaseSocket::operator <<(std::string Line) const
 {
+	if(verbose)
+		cout << "| Sending string data         |" << endl;
 	if(send(rSocket, Line.c_str(), (int)Line.length(), 0) == SOCKET_ERROR)
 	{
 		std::cout << "Error while sending data\n";
@@ -75,6 +91,8 @@ const CBaseSocket& CBaseSocket::operator <<(std::string Line) const
 
 const CBaseSocket& CBaseSocket::operator <<(std::vector<unsigned char> Data) const
 {
+	if(verbose)
+		cout << "| Sending binary data         |" << endl;
 	char *szData = new char[Data.size()];
 	unsigned int i;
 	for (i=0; i < Data.size(); i++)
@@ -93,6 +111,8 @@ const CBaseSocket& CBaseSocket::operator <<(std::vector<unsigned char> Data) con
 
 const CBaseSocket& CBaseSocket::operator >>(std::string &Line) const
 {
+	if(verbose)
+		cout << "| Receiving line data         |" << endl;
 	char buf[8096];
 	memset(buf, 0x00, sizeof(buf));
 	int nBytes = recv(rSocket, buf, sizeof(buf), 0);
@@ -107,6 +127,8 @@ const CBaseSocket& CBaseSocket::operator >>(std::string &Line) const
 
 const CBaseSocket& CBaseSocket::operator >>(std::vector<unsigned char> &Data) const
 {
+	if(verbose)
+		cout << "| Receiving binary data       |" << endl;
 	u_long arg = 0;
 	while(arg == 0)
 	{
@@ -135,6 +157,8 @@ const CBaseSocket& CBaseSocket::operator >>(std::vector<unsigned char> &Data) co
 
 std::string CBaseSocket::ReceiveBytes(void *argPtr, void (*callback)(void *arg, size_t TotalByteCount), int amountBytes)
 {
+	if(verbose)
+		cout << "| Low-level byte receiving    |" << endl;
 	std::string ret;
 	char buf[8192];
 	for ( ; ; )
@@ -164,6 +188,8 @@ std::string CBaseSocket::ReceiveBytes(void *argPtr, void (*callback)(void *arg, 
 
 void CBaseSocket::SendBytes(const char *s, int length)
 {
+	if(verbose)
+		cout << "| Low-level byte sending      |" << endl;
 	if(send(rSocket,s,length,0) == SOCKET_ERROR)
 	{
 
