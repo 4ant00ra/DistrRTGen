@@ -161,7 +161,7 @@ void getNext(string* x, string text)
 	int element = 0;
 	while(pos != string::npos)
 	{
-		pos = text.find(',');
+		pos = text.find(':');
 		x[element] = text.substr(0,pos);
 		element++;
 		text = text.substr(pos+1);
