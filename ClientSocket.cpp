@@ -15,6 +15,11 @@ CClientSocket::CClientSocket(int nSocketType, int nProtocol) : CBaseSocket(nSock
 		cout << "| Creating Client socket      |" << endl;
 }
 
+void CClientSocket::Login(void)
+{
+	*this << szHostname << "\n";
+}
+
 int CClientSocket::Connect(string szHost, int nPort)
 {
 	gethostname(szHostname, 64);

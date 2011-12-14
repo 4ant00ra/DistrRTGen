@@ -226,6 +226,8 @@ int main(int argc, char* argv[])
 		Con = new CClientSocket(SOCK_STREAM, 0);
 	}
 
+	Con->Login();
+
 	while(1)
 	{
 		#ifndef WIN32
@@ -253,6 +255,10 @@ int main(int argc, char* argv[])
 				cout << "+-----------------------------+" << endl;
 				exit(1);
 			}
+			cout << "| Part:                  ";
+			cout.fill(' ');
+			cout.width(4);
+			cout << right << stWork.nPartID << " |" << endl;
 			fwrite(&stWork, sizeof(unsigned int), 6, fileResume); // Write the 6 unsigned ints
 			fwrite(&stWork.nChainStart, 1, 8, fileResume); // Write nChainStart uint64
 			fwrite(stWork.sCharset.c_str(), stWork.sCharset.length(), 1, fileResume);

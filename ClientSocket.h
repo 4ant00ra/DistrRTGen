@@ -15,6 +15,7 @@ class CClientSocket :
 	public:
 		CClientSocket(void);
 		CClientSocket(int, int);
+		void Login(void);
 		int Connect(std::string, int);
 		void Progress(void);
 		void Progress(int,int,int);
