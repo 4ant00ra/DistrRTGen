@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 	int nResult;
 	double nFrequency;
 	std::string sHomedir;
-	std::string szServer = "all.stdover.org";
+	std::string szServer = "xxxxxxxxx";
 	int nNumProcessors = 0;
 
 	if(argc > 1)
