@@ -7,6 +7,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <time.h>
+#include <unistd.h>
 
 #ifndef WIN32
 #include <errno.h>

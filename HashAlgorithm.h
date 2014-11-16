@@ -9,7 +9,6 @@
 
 void HashLM(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const unsigned char *pUsername = 0, int nSaltLength = 0);
 void HashNTLM(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const unsigned char *pUsername = 0, int nSaltLength = 0);
-void HashMD2(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const unsigned char *pUsername = 0, int nSaltLength = 0);
 void HashMD4(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const unsigned char *pUsername = 0, int nSaltLength = 0);
 void HashMD5(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const unsigned char *pUsername = 0, int nSaltLength = 0);
 void HashSHA1(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const unsigned char *pUsername = 0, int nSaltLength = 0);

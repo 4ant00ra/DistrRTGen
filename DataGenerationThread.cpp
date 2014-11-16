@@ -1,5 +1,6 @@
 #include <iostream>
 #include <time.h>
+#include <unistd.h>
 
 #include "ChainWalkContext.h"
 #include "DataGenerationThread.h"

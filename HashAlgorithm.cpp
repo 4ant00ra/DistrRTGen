@@ -5,7 +5,6 @@
    */
 
 #include <openssl/des.h>
-#include <openssl/md2.h>
 #include <openssl/md4.h>
 #include <openssl/md5.h>
 #include <openssl/ripemd.h>
@@ -110,19 +109,6 @@ void HashNTLM(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const 
 	MD4_Init(&ctx);
 	MD4_Update(&ctx, UnicodePlain, nPlainLen * 2);
 	MD4_Final((unsigned char *) pHash, &ctx);
-#endif
-}
-
-void HashMD2(unsigned char* pPlain, int nPlainLen, unsigned char* pHash, const unsigned char *pSalt, int nSaltLength)
-{
-	//mod:alesc
-#ifndef _FAST_HASH_
-	MD2(pPlain, nPlainLen, pHash);
-#else
-	MD2_CTX ctx;
-	MD2_Init(&ctx);
-	MD2_Update(&ctx, pPlain, nPlainLen);
-	MD2_Final((unsigned char *) pHash, &ctx);
 #endif
 }
 
